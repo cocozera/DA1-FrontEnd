@@ -1,0 +1,92 @@
+# Node modules
+/node_modules/
+
+# Build output
+/build/
+/dist/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local env files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDEs
+.vscode/
+.idea/
+
+# Operating System files
+.DS_Store
+Thumbs.db
+
+# React Native
+.expo/
+*.jks
+*.keystore
+
+# Test coverage
+coverage/
+
+# Dependency directories
+jspm_packages/
+
+# npm package lock
+package-lock.json
+npm-shrinkwrap.json
+
+# Yarn package lock
+yarn.lock
+
+# Next.js (if using Next.js)
+.next/
+
+# Storybook (if using Storybook)
+.storybook/
+
+# Expo (if using Expo for React Native)
+.expo/
+
+# Serverless framework (if using Serverless)
+.serverless/
+
+# Vercel configuration (if using Vercel)
+.vercel/
+
+# Webpack configuration (if using webpack for custom configuration)
+webpack.config.js
+
+# Parcel cache (if using Parcel bundler)
+.cache/
+
+# Prettier config files
+.prettierignore
+.prettierrc
+
+# Babel configuration
+.babelrc
+babel.config.js
+
+# SASS cache
+.sass-cache/
+
+# MacOS specific files
+*.swp
+*.swo
+
+# Windows thumbnail cache
+Thumbs.db
+
+# JetBrains IDEs
+.idea/
+
+# NPM logs (in case of failed installs)
+npm-debug.log*
+
+# Create React App specific
+public/static/
