@@ -1,29 +1,32 @@
-// src/screens/LoginScreen.js
 import { useState } from 'react';
 import {
-  KeyboardAvoidingView,
-  Platform,
-  SafeAreaView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View
+    KeyboardAvoidingView,
+    Platform,
+    SafeAreaView,
+    StatusBar,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View
 } from 'react-native';
 import CustomButton from '../components/CustomButton';
 import CustomTextInput from '../components/CustomTextInput';
 import { colors, typography } from '../styles/globalStyles';
 
-export default function LoginScreen({ navigation }) {
+export default function RegisterScreen({ navigation }) {
+  const [name, setName]         = useState('');
   const [email, setEmail]       = useState('');
   const [password, setPassword] = useState('');
+  const [phone, setPhone]       = useState('');
   const [loading, setLoading]   = useState(false);
 
-  const handleSubmit = async () => {
+  const handleRegister = async () => {
     setLoading(true);
     try {
-      // tu lógica de login aquí
-      await Promise.resolve();
+      // aquí tu lógica de registro, por ejemplo:
+      // await api.register({ name, email, password, phone });
+    } catch (e) {
+      console.error(e);
     } finally {
       setLoading(false);
     }
@@ -32,46 +35,51 @@ export default function LoginScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.backgroundBeige} />
-
       <KeyboardAvoidingView
         style={styles.wrapper}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
         <View style={styles.card}>
-          <Text style={styles.title}>Inicio de Sesión</Text>
+          <Text style={styles.title}>Registro</Text>
 
-          {/* --- Formulario incrustado --- */}
+          <CustomTextInput
+            placeholder="Nombre"
+            value={name}
+            onChangeText={setName}
+          />
           <CustomTextInput
             placeholder="Email"
+            keyboardType="email-address"
             value={email}
             onChangeText={setEmail}
-            keyboardType="email-address"
           />
-
           <CustomTextInput
             placeholder="Contraseña"
+            secureTextEntry
             value={password}
             onChangeText={setPassword}
-            secureTextEntry
+          />
+          <CustomTextInput
+            placeholder="Teléfono"
+            keyboardType="phone-pad"
+            value={phone}
+            onChangeText={setPhone}
           />
 
           <CustomButton
-            title="INGRESAR"
-            onPress={handleSubmit}
+            title="REGISTRARSE"
+            onPress={handleRegister}
             loading={loading}
           />
 
-          <View style={styles.links}>
-            <TouchableOpacity onPress={() => {/* lógica olvido */}}>
-              <Text style={styles.linkText}>¿Olvidaste tu contraseña?</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('Register')}
-              style={{ marginTop: 8 }}
-            >
-              <Text style={styles.linkText}>¿No tenés cuenta? Registrate ahora</Text>
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity
+            style={styles.bottomLink}
+            onPress={() => navigation.navigate('Login')}
+          >
+            <Text style={styles.bottomLinkText}>
+              ¿Ya tenés cuenta? Inicia sesión
+            </Text>
+          </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -105,11 +113,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 24,
   },
-  links: {
+  bottomLink: {
     marginTop: 24,
     alignItems: 'center',
   },
-  linkText: {
+  bottomLinkText: {
     ...typography.link,
   },
 });
