@@ -55,5 +55,19 @@ export const changePassword = async ({ email, code, newPassword }) => {
   }
 };
 
+export const recoverPassword = async ({ email }) => {
+  console.log("📧 recoverPassword llamado con:", email);
+  try {
+    const { data } = await api.post("/auth/recover-password", { email });
+    console.log("✅ recoverPassword respuesta:", data);
+    return { success: true, data };
+  } catch (error) {
+    console.error("❌ Error en recoverPassword:", error);
+    const msg =
+      error?.response?.data?.message || "Error al enviar el código de recuperación";
+    console.log("⚠️ recoverPassword lanza mensaje:", msg);
+    return { success: false, error: msg };
+  }
+};
 
 

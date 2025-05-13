@@ -17,7 +17,6 @@ const ChangePasswordScreen = () => {
   const route = useRoute();
   const navigation = useNavigation();
 
-  // El correo se recibe desde la pantalla anterior
   const { email } = route.params;
 
   const [code, setCode] = useState('');
@@ -42,7 +41,7 @@ const ChangePasswordScreen = () => {
 
     if (res.success) {
       Alert.alert('Éxito', 'Contraseña cambiada correctamente');
-      navigation.navigate('Login', { email }); // Redirige al login con el email
+      navigation.navigate('Login', { email });
     } else {
       Alert.alert('Error', res.error?.message || 'No se pudo cambiar la contraseña');
     }
@@ -54,7 +53,7 @@ const ChangePasswordScreen = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <View style={styles.form}>
-        <Text style={typography.h1}>Cambiar Contraseña</Text>
+        <Text style={styles.title}>Cambiar Contraseña</Text>
 
         <CustomTextInput
           placeholder="Código de verificación"
@@ -102,6 +101,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 5,
+  },
+  title: {
+    ...typography.h1,
+    textAlign: 'center',
+    marginBottom: 24,
   },
 });
 
