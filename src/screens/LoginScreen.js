@@ -65,11 +65,12 @@ export default function LoginScreen({ navigation }) {
           />
 
           <View style={styles.links}>
-            <TouchableOpacity onPress={() => {/* TODO: recover password */}}>
+            <TouchableOpacity onPress={() => navigation.navigate('RecoverPassword')}>
               <Text style={styles.linkText}>
                 ¿Olvidaste tu contraseña?
               </Text>
             </TouchableOpacity>
+
             <TouchableOpacity
               onPress={() => navigation.navigate('Register')}
               style={{ marginTop: 8 }}
