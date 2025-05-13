@@ -34,7 +34,7 @@ export default function LoginScreen({ navigation }) {
     try {
       await login({ email, password });
       console.log("✅ handleLogin: éxito, navegando a Home");
-      navigation.replace("Home");
+      
     } catch (err) {
       console.error("❌ handleLogin:", err);
       Toast.show({ type: "error", text1: err.message });
