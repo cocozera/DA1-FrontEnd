@@ -1,92 +1,39 @@
-# Node modules
-/node_modules/
+# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
 
-# Build output
-/build/
-/dist/
+# dependencies
+node_modules/
 
-# Logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Local env files
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
-# IDEs
-.vscode/
-.idea/
-
-# Operating System files
-.DS_Store
-Thumbs.db
-
-# React Native
+# Expo
 .expo/
+dist/
+web-build/
+expo-env.d.ts
+
+# Native
+.kotlin/
+*.orig.*
 *.jks
-*.keystore
+*.p8
+*.p12
+*.key
+*.mobileprovision
 
-# Test coverage
-coverage/
+# Metro
+.metro-health-check*
 
-# Dependency directories
-jspm_packages/
+# debug
+npm-debug.*
+yarn-debug.*
+yarn-error.*
 
-# npm package lock
-package-lock.json
-npm-shrinkwrap.json
+# macOS
+.DS_Store
+*.pem
 
-# Yarn package lock
-yarn.lock
+# local env files
+.env*.local
 
-# Next.js (if using Next.js)
-.next/
+# typescript
+*.tsbuildinfo
 
-# Storybook (if using Storybook)
-.storybook/
-
-# Expo (if using Expo for React Native)
-.expo/
-
-# Serverless framework (if using Serverless)
-.serverless/
-
-# Vercel configuration (if using Vercel)
-.vercel/
-
-# Webpack configuration (if using webpack for custom configuration)
-webpack.config.js
-
-# Parcel cache (if using Parcel bundler)
-.cache/
-
-# Prettier config files
-.prettierignore
-.prettierrc
-
-# Babel configuration
-.babelrc
-babel.config.js
-
-# SASS cache
-.sass-cache/
-
-# MacOS specific files
-*.swp
-*.swo
-
-# Windows thumbnail cache
-Thumbs.db
-
-# JetBrains IDEs
-.idea/
-
-# NPM logs (in case of failed installs)
-npm-debug.log*
-
-# Create React App specific
-public/static/
+app-example
