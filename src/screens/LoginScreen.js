@@ -1,9 +1,9 @@
-import { useContext, useEffect, useState } from "react";
+// src/screens/LoginScreen.js
+import { useContext, useState } from "react";
 import {
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
-  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -15,78 +15,66 @@ import CustomTextInput from "../components/CustomTextInput";
 import { AuthContext } from "../context/authContext";
 import { colors, typography } from "../styles/globalStyles";
 
-export default function LoginScreen({ navigation, route }) {
+export default function LoginScreen({ navigation }) {
   const { login, loading } = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  // ✅ Traer el mail si viene desde otra screen (ej: ChangePasswordScreen)
-  useEffect(() => {
-    if (route?.params?.email) {
-      setEmail(route.params.email);
-    }
-  }, [route?.params?.email]);
+  console.log("🔍 LoginScreen render");
 
-  const handleSubmit = async () => {
-    try {
-      const newToken = await login({ email, password });
-      if (newToken) {
-        Toast.show({ type: "success", text1: "Login exitoso" });
-        navigation.navigate("Home");
-      } else {
-        throw new Error("Credenciales incorrectas");
-      }
-    } catch (err) {
-      Toast.show({
+  const handleLogin = async () => {
+    console.log("▶️ handleLogin presionado:", { email, password: "***" });
+    if (!email || !password) {
+      console.log("⚠️ handleLogin: faltan campos");
+      return Toast.show({
         type: "error",
-        text1: "Error",
-        text2: err.message || "Fallo de login",
-        position: "bottom",
+        text1: "Completa todos los campos",
       });
+    }
+    try {
+      await login({ email, password });
+      console.log("✅ handleLogin: éxito, navegando a Home");
+      navigation.replace("Home");
+    } catch (err) {
+      console.error("❌ handleLogin:", err);
+      Toast.show({ type: "error", text1: err.message });
     }
   };
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar
-        barStyle="dark-content"
-        backgroundColor={colors.backgroundBeige}
-      />
-
       <KeyboardAvoidingView
         style={styles.wrapper}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
         <View style={styles.card}>
-          <Text style={styles.title}>Inicio de Sesión</Text>
-
+          <Text style={styles.title}>Iniciar sesión</Text>
           <CustomTextInput
             placeholder="Email"
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
+            autoCapitalize="none"
           />
-
           <CustomTextInput
-            placeholder="Contraseña"
+            placeholder="Password"
             value={password}
             onChangeText={setPassword}
             secureTextEntry
           />
-
           <CustomButton
-            title="INGRESAR"
-            onPress={handleSubmit}
+            title="Ingresar"
+            onPress={handleLogin}
             loading={loading}
           />
-
           <View style={styles.links}>
             <TouchableOpacity
               onPress={() => navigation.navigate("RecoverPassword")}
             >
-              <Text style={styles.linkText}>¿Olvidaste tu contraseña?</Text>
+              <Text style={styles.linkText}>
+                ¿Olvidaste tu contraseña?
+              </Text>
             </TouchableOpacity>
-
             <TouchableOpacity
               onPress={() => navigation.navigate("Register")}
               style={{ marginTop: 8 }}
@@ -98,20 +86,14 @@ export default function LoginScreen({ navigation, route }) {
           </View>
         </View>
       </KeyboardAvoidingView>
+      <Toast />
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: colors.backgroundBeige,
-  },
-  wrapper: {
-    flex: 1,
-    justifyContent: "center",
-    paddingHorizontal: 20,
-  },
+  safeArea: { flex: 1, backgroundColor: colors.backgroundBeige },
+  wrapper: { flex: 1, justifyContent: "center", paddingHorizontal: 20 },
   card: {
     backgroundColor: colors.white,
     borderRadius: 20,
@@ -127,11 +109,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 24,
   },
-  links: {
-    marginTop: 24,
-    alignItems: "center",
-  },
-  linkText: {
-    ...typography.link,
-  },
+  links: { marginTop: 24, alignItems: "center" },
+  linkText: { ...typography.link },
 });

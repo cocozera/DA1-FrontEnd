@@ -1,56 +1,43 @@
 // src/services/authService.js
-import api from './api';
+import api from "./api";
+
 export const loginApi = async ({ email, password }) => {
+  console.log("🔑 loginApi llamado con:", { email, password: "***" });
   try {
-    const { data } = await api.post('/auth/login', { email, password });
+    const { data } = await api.post("/auth/login", { email, password });
+    console.log("✅ loginApi respuesta:", data);
     return data;
   } catch (error) {
-    console.error('Error en loginApi:', error);
-
-    // Verificar si el error tiene una respuesta y si contiene el mensaje
-    if (error && error.response && error.response.data && error.response.data.message) {
-      throw new Error(error.response.data.message); // Usar el mensaje específico de la API
-    }
-
-    // Si no hay un mensaje detallado, lanzar un error genérico
-    throw new Error('Error al iniciar sesión');
+    console.error("❌ Error en loginApi:", error);
+    const msg =
+      error?.response?.data?.message || "Error al iniciar sesión";
+    console.log("⚠️ loginApi lanza mensaje:", msg);
+    throw new Error(msg);
   }
 };
 
-
 export const registerApi = async ({ name, email, password, phoneNumber }) => {
+  console.log("📝 registerApi llamado con:", {
+    name,
+    email,
+    phoneNumber,
+    password: "***",
+  });
   try {
-    const { data } = await api.post('/auth/register', {
+    const { data } = await api.post("/auth/register", {
       name,
       email,
       password,
-      phoneNumber
+      phoneNumber,
     });
+    console.log("✅ registerApi respuesta:", data);
     return data;
   } catch (error) {
-    console.error('Error en registerApi:', error);
-    throw new Error(error?.response?.data?.message || 'Error al registrarse');
-  }
-};
-
-export const recoverPassword = async (data) => {
-  try {
-    const res = await api.post('/auth/recover-password', data);
-    console.log('STATUS:', res.status);
-    console.log('DATA:', res.data);
-    return { success: true, data: res.data };
-  } catch (err) {
-    console.error('ERROR:', err.response?.data || err.message);
-    return { success: false, error: err };
-  }
-};
-
-export const verifyToken = async (data) => {
-  try {
-    const res = await api.post('/auth/verify-token', data);
-    return { success: true, data: res.data };
-  } catch (err) {
-    return { success: false, error: err.response?.data || err.message };
+    console.error("❌ Error en registerApi:", error);
+    const msg =
+      error?.response?.data?.message || "Error al registrarse";
+    console.log("⚠️ registerApi lanza mensaje:", msg);
+    throw new Error(msg);
   }
 };
 
