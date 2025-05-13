@@ -1,40 +1,48 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import {
-    KeyboardAvoidingView,
-    Platform,
-    SafeAreaView,
-    StatusBar,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
 } from 'react-native';
 import CustomButton from '../components/CustomButton';
 import CustomTextInput from '../components/CustomTextInput';
+import { AuthContext } from '../context/authContext';
 import { colors, typography } from '../styles/globalStyles';
 
 export default function RegisterScreen({ navigation }) {
+  const { register, loading } = useContext(AuthContext);
   const [name, setName]         = useState('');
   const [email, setEmail]       = useState('');
   const [password, setPassword] = useState('');
   const [phone, setPhone]       = useState('');
-  const [loading, setLoading]   = useState(false);
 
   const handleRegister = async () => {
-    setLoading(true);
     try {
-      // aquí tu lógica de registro, por ejemplo:
-      // await api.register({ name, email, password, phone });
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setLoading(false);
+      await register({
+        name,
+        email,
+        password,
+        phoneNumber: phone
+      });
+      // tras registro exitoso el navigator cambiará al flujo autenticado
+    } catch (err) {
+      console.error(err);
+      Alert.alert('Error', err.message || 'Fallo de registro');
     }
   };
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar barStyle="dark-content" backgroundColor={colors.backgroundBeige} />
+      <StatusBar
+        barStyle="dark-content"
+        backgroundColor={colors.backgroundBeige}
+      />
       <KeyboardAvoidingView
         style={styles.wrapper}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -47,18 +55,21 @@ export default function RegisterScreen({ navigation }) {
             value={name}
             onChangeText={setName}
           />
+
           <CustomTextInput
             placeholder="Email"
             keyboardType="email-address"
             value={email}
             onChangeText={setEmail}
           />
+
           <CustomTextInput
             placeholder="Contraseña"
             secureTextEntry
             value={password}
             onChangeText={setPassword}
           />
+
           <CustomTextInput
             placeholder="Teléfono"
             keyboardType="phone-pad"
@@ -100,12 +111,10 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     borderRadius: 20,
     padding: 24,
-    // sombra iOS
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
-    // sombra Android
     elevation: 5,
   },
   title: {

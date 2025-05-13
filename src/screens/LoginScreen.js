@@ -1,6 +1,6 @@
-// src/screens/LoginScreen.js
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import {
+  Alert,
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
@@ -12,26 +12,30 @@ import {
 } from 'react-native';
 import CustomButton from '../components/CustomButton';
 import CustomTextInput from '../components/CustomTextInput';
+import { AuthContext } from '../context/authContext';
 import { colors, typography } from '../styles/globalStyles';
 
 export default function LoginScreen({ navigation }) {
+  const { login, loading } = useContext(AuthContext);
   const [email, setEmail]       = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading]   = useState(false);
 
   const handleSubmit = async () => {
-    setLoading(true);
     try {
-      // tu lógica de login aquí
-      await Promise.resolve();
-    } finally {
-      setLoading(false);
+      await login({ email, password });
+      // al resolverse, el Navigator re-­renderizará y mostrará la pantalla auth-protegida
+    } catch (err) {
+      console.error(err);
+      Alert.alert('Error', err.message || 'Fallo de login');
     }
   };
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar barStyle="dark-content" backgroundColor={colors.backgroundBeige} />
+      <StatusBar
+        barStyle="dark-content"
+        backgroundColor={colors.backgroundBeige}
+      />
 
       <KeyboardAvoidingView
         style={styles.wrapper}
@@ -40,7 +44,6 @@ export default function LoginScreen({ navigation }) {
         <View style={styles.card}>
           <Text style={styles.title}>Inicio de Sesión</Text>
 
-          {/* --- Formulario incrustado --- */}
           <CustomTextInput
             placeholder="Email"
             value={email}
@@ -62,14 +65,18 @@ export default function LoginScreen({ navigation }) {
           />
 
           <View style={styles.links}>
-            <TouchableOpacity onPress={() => {/* lógica olvido */}}>
-              <Text style={styles.linkText}>¿Olvidaste tu contraseña?</Text>
+            <TouchableOpacity onPress={() => {/* TODO: recover password */}}>
+              <Text style={styles.linkText}>
+                ¿Olvidaste tu contraseña?
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => navigation.navigate('Register')}
               style={{ marginTop: 8 }}
             >
-              <Text style={styles.linkText}>¿No tenés cuenta? Registrate ahora</Text>
+              <Text style={styles.linkText}>
+                ¿No tenés cuenta? Registrate ahora
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -92,12 +99,10 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     borderRadius: 20,
     padding: 24,
-    // sombra iOS
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
-    // sombra Android
     elevation: 5,
   },
   title: {
