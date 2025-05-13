@@ -1,6 +1,5 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import {
-  Alert,
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
@@ -10,25 +9,53 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
+import Toast from 'react-native-toast-message';
 import CustomButton from '../components/CustomButton';
 import CustomTextInput from '../components/CustomTextInput';
 import { AuthContext } from '../context/authContext';
 import { colors, typography } from '../styles/globalStyles';
 
-export default function LoginScreen({ navigation }) {
+export default function LoginScreen({ navigation, route }) {
   const { login, loading } = useContext(AuthContext);
-  const [email, setEmail]       = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSubmit = async () => {
-    try {
-      await login({ email, password });
-      // al resolverse, el Navigator re-­renderizará y mostrará la pantalla auth-protegida
-    } catch (err) {
-      console.error(err);
-      Alert.alert('Error', err.message || 'Fallo de login');
+  // ✅ Traer el mail si viene desde otra screen (ej: ChangePasswordScreen)
+  useEffect(() => {
+    if (route?.params?.email) {
+      setEmail(route.params.email);
     }
-  };
+  }, [route?.params?.email]);
+
+const handleSubmit = async () => {
+  try {
+    const response = await login({ email, password });
+
+    // Verificar si la respuesta contiene un token
+    if (response && response.token) {
+      Toast.show({
+        type: 'success',
+        text1: 'Login exitoso',
+        position: 'bottom',
+      });
+
+      // Guardar el token o hacer cualquier otra operación de redirección
+      navigation.navigate('Home'); // O la pantalla que desees
+    } else {
+      // Si no se encuentra el token, lanzar un error
+      throw new Error(response.message || 'Credenciales incorrectas');
+    }
+  } catch (err) {
+    console.error(err);
+    Toast.show({
+      type: 'error',
+      text1: 'Error',
+      text2: err.message || 'Fallo de login',
+      position: 'bottom',
+    });
+  }
+};
+
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -66,9 +93,7 @@ export default function LoginScreen({ navigation }) {
 
           <View style={styles.links}>
             <TouchableOpacity onPress={() => navigation.navigate('RecoverPassword')}>
-              <Text style={styles.linkText}>
-                ¿Olvidaste tu contraseña?
-              </Text>
+              <Text style={styles.linkText}>¿Olvidaste tu contraseña?</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
