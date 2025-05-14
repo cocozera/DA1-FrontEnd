@@ -1,14 +1,14 @@
 import { useNavigation } from '@react-navigation/native';
 import { useContext, useEffect, useState } from 'react';
 import {
-    Dimensions,
-    SafeAreaView,
-    ScrollView,
-    StyleSheet,
-    Text,
-    // RefreshControl,
-    TouchableOpacity,
-    View
+  Dimensions,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  // RefreshControl,
+  TouchableOpacity,
+  View
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { AuthContext } from '../context/authContext';
@@ -85,7 +85,7 @@ export default function HomeScreen() {
         {/* UI de Rutas Disponibles */}
         <TouchableOpacity
           style={styles.card}
-          /* onPress deshabilitado */
+          onPress={() => navigation.navigate('ViewAllRoutes')}
         >
           <View style={styles.cardContent}>
             <Icon name="map-marker-path" size={40} color={colors.engineeringOrange} />
