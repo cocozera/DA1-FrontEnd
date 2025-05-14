@@ -12,6 +12,7 @@ import {
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { AuthContext } from '../context/authContext';
 import { getAllRoutes } from '../services/routeService';
+import { colors, typography } from '../styles/globalStyles';
 
 export default function ViewAllRoutesScreen({ navigation }) {
   const { token } = useContext(AuthContext);
@@ -64,11 +65,11 @@ export default function ViewAllRoutesScreen({ navigation }) {
           onPress={handleGoBack}
           activeOpacity={0.6}
         >
-          <Icon name="arrow-left" size={24} color={colors.darkRed} />
+          <Icon name="arrow-left" size={24} color={colors.textPrimary} />
         </TouchableOpacity>
 
         <View style={styles.headerContainer}>
-          <Icon name="map-marker-path" size={28} color={colors.engineeringOrange} />
+          <Icon name="map-marker-path" size={28} color={colors.primary} />
           <Text style={styles.headerText}>Rutas disponibles</Text>
         </View>
       </View>
@@ -76,7 +77,7 @@ export default function ViewAllRoutesScreen({ navigation }) {
       <View style={styles.card}>
         {loading ? (
           <View style={styles.center}>
-            <ActivityIndicator size="large" />
+            <ActivityIndicator size="large" color={colors.primary} />
           </View>
         ) : (
           <FlatList
@@ -93,18 +94,10 @@ export default function ViewAllRoutesScreen({ navigation }) {
   );
 }
 
-const colors = {
-  champagnePink: '#F7E7CE',
-  darkRed: '#8B0000',
-  engineeringOrange: '#FB8C00',
-  white: '#FFFFFF',
-  khaki: '#F0E68C',
-};
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.champagnePink,
+    backgroundColor: colors.backgroundBeige,
   },
   headerWrapper: {
     flexDirection: 'row',
@@ -127,9 +120,7 @@ const styles = StyleSheet.create({
     marginStart: 12,
   },
   headerText: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: colors.darkRed,
+    ...typography.h1,
     marginStart: 12,
   },
   card: {
@@ -146,7 +137,7 @@ const styles = StyleSheet.create({
   },
   separator: {
     height: 1,
-    backgroundColor: colors.khaki,
+    backgroundColor: colors.gray300,
   },
   item: {
     paddingVertical: 8,
@@ -154,7 +145,7 @@ const styles = StyleSheet.create({
   address: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: colors.engineeringOrange,
+    color: colors.primary,
   },
   center: {
     flex: 1,
