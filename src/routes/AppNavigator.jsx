@@ -5,6 +5,7 @@ import LoginScreen from '../screens/LoginScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import RecoverPasswordScreen from '../screens/RecoverPasswordScreen';
 import RegisterScreen from '../screens/RegisterScreen';
+import RouteDetailScreen from '../screens/RouteDetailScreen';
 import TokenVerificationScreen from '../screens/TokenVerificationScreen';
 import ViewAllRoutesScreen from '../screens/ViewAllRoutesScreen';
 
@@ -22,6 +23,7 @@ export default function AppNavigator() {
       <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen name="ViewAllRoutes" component={ViewAllRoutesScreen} />
       <Stack.Screen name="Profile" component={ProfileScreen} />
+      <Stack.Screen name="RouteDetail" component={RouteDetailScreen} />
     </Stack.Navigator>
   );
 }

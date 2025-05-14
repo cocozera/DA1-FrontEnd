@@ -48,15 +48,17 @@ export default function ViewAllRoutesScreen({ navigation }) {
 
   const renderSeparator = () => <View style={styles.separator} />;
 
-  const renderItem = ({ item }) => (
-    <View style={styles.item}>
-      <Text style={styles.address}>{item.address}</Text>
-      <Text>Zona: {item.zone}</Text>
-      <Text>Estado: {item.status}</Text>
-      {/* Ocultado Inicio y Fin para simplicidad */}
-    </View>
-  );
-
+const renderItem = ({ item }) => (
+  <TouchableOpacity
+    onPress={() => navigation.navigate('RouteDetail', { routeId: item.id })}
+    style={styles.item}
+    activeOpacity={0.7}
+  >
+    <Text style={styles.address}>{item.address}</Text>
+    <Text>Zona: {item.zone}</Text>
+    <Text>Estado: {item.status}</Text>
+  </TouchableOpacity>
+);
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerWrapper}>
