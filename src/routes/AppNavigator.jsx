@@ -1,5 +1,6 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import ChangePasswordScreen from '../screens/ChangePasswordScreen';
+import HomeScreen from '../screens/HomeScreen';
 import LoginScreen from '../screens/LoginScreen';
 import RecoverPasswordScreen from '../screens/RecoverPasswordScreen';
 import RegisterScreen from '../screens/RegisterScreen';
@@ -16,6 +17,7 @@ export default function AppNavigator() {
       <Stack.Screen name="RecoverPassword" component={RecoverPasswordScreen} />
       <Stack.Screen name="TokenVerification" component={TokenVerificationScreen} />
       <Stack.Screen name="ChangePassword" component={ChangePasswordScreen} />
+      <Stack.Screen name="Home" component={HomeScreen} />
     </Stack.Navigator>
   );
 }
