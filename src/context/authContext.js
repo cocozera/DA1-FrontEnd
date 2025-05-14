@@ -2,6 +2,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createContext, useEffect, useState } from "react";
 import { loginApi, registerApi } from "../services/authService";
+import { getProfile } from '../services/userService';
+
 
 export const AuthContext = createContext({});
 
@@ -29,19 +31,27 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async ({ email, password }) => {
-    console.log("🔄 AuthContext.login iniciando...");
-    setLoading(true);
-    try {
-      const { token: newToken } = await loginApi({ email, password });
-      console.log("🔑 AuthContext.login guardando token:", newToken);
-      setToken(newToken);
-      await AsyncStorage.setItem("token", newToken);
-      return newToken;
-    } finally {
-      setLoading(false);
-      console.log("🔄 AuthContext.login terminó");
+  setLoading(true);
+  try {
+    const { token: newToken } = await loginApi({ email, password });
+    setToken(newToken);
+    await AsyncStorage.setItem("token", newToken);
+
+    // 🔁 Recuperar userId desde otro lado o backend
+    const savedUserId = await AsyncStorage.getItem("userId");
+    const userId = savedUserId ? parseInt(savedUserId) : null;
+
+    if (!userId) {
+      console.warn("⚠️ No hay userId guardado, no puedo hacer /me");
+      return;
     }
-  };
+
+    const profile = await getProfile(userId);
+    setUser(profile);
+  } finally {
+    setLoading(false);
+  }
+};
 
   const register = async (data) => {
     console.log("🔄 AuthContext.register iniciando con:", data);

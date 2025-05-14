@@ -13,7 +13,7 @@ import {
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { AuthContext } from '../context/authContext';
 // import routeService from '../services/routeService';
-import userService from '../services/userService';
+import { getProfile } from '../services/userService';
 
 const { width } = Dimensions.get('window');
 
@@ -34,13 +34,14 @@ export default function HomeScreen() {
   }, [token]);
 
   const fetchUser = async () => {
-    try {
-      const { data } = await userService.getMe(userId);
-      setUserName(data.name || '');
-    } catch (err) {
-      console.warn('Error fetching user:', err);
-    }
-  };
+  try {
+    const data = await getProfile(userId); // ✅ pasamos el userId como param
+    setUserName(data.name || '');
+  } catch (err) {
+    console.warn('Error fetching user:', err);
+  }
+};
+
 
   // const checkInProgress = async () => {
   //   try {
@@ -73,9 +74,10 @@ export default function HomeScreen() {
           </View>
 
           {/* Placeholder Usuario (sin funcionalidad) */}
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
             <Icon name="account-circle" size={40} color={colors.darkRed} />
           </TouchableOpacity>
+
         </View>
 
         <Text style={styles.title}>
