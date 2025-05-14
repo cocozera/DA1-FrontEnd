@@ -71,10 +71,11 @@ export default function HomeScreen() {
             {/*<Image source={require('../assets/ic_deremate.png')} style={styles.logo} />*/}
             <Text style={styles.brand}>DeRemate.com</Text>
           </View>
-          {/* Perfil deshabilitado */}
-          {/* <TouchableOpacity onPress={() => navigation.navigate('Profile')}> */}
-          {/*   <Icon name="account-circle" size={40} color={colors.darkRed} /> */}
-          {/* </TouchableOpacity> */}
+
+          {/* Placeholder Usuario (sin funcionalidad) */}
+          <TouchableOpacity>
+            <Icon name="account-circle" size={40} color={colors.darkRed} />
+          </TouchableOpacity>
         </View>
 
         <Text style={styles.title}>
@@ -84,7 +85,7 @@ export default function HomeScreen() {
         {/* UI de Rutas Disponibles */}
         <TouchableOpacity
           style={styles.card}
-          onPress={() => navigation.navigate('AvailableRoutes')}
+          /* onPress deshabilitado */
         >
           <View style={styles.cardContent}>
             <Icon name="map-marker-path" size={40} color={colors.engineeringOrange} />
@@ -95,7 +96,7 @@ export default function HomeScreen() {
         {/* UI de Historial de Rutas */}
         <TouchableOpacity
           style={[styles.card, { marginTop: 24 }]}
-          onPress={() => navigation.navigate('RouteHistory')}
+          /* onPress deshabilitado */
         >
           <View style={styles.cardContent}>
             <Icon name="history" size={40} color={colors.engineeringOrange} />
@@ -104,12 +105,9 @@ export default function HomeScreen() {
         </TouchableOpacity>
       </ScrollView>
 
-      {/* FAB de rutas en progreso: temporariamente oculto */}
-      {/* {hasInProgress && (
-        <TouchableOpacity
-          style={styles.fab}
-          onPress={() => navigation.navigate('InProgressRoutes')}
-        >
+      {/* FAB de rutas en progreso: temporalmente oculto
+      {hasInProgress && (
+        <TouchableOpacity style={styles.fab}>
           <Icon name="progress-clock" size={28} color="#fff" />
         </TouchableOpacity>
       )} */}
