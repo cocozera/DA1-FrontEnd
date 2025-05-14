@@ -29,25 +29,19 @@ export const AuthProvider = ({ children }) => {
       setInitializing(false);
     })();
   }, []);
-
-  const login = async ({ email, password }) => {
+  
+const login = async ({ email, password }) => {
   setLoading(true);
   try {
     const { token: newToken } = await loginApi({ email, password });
+    
+    // Guardar token en estado y en storage
     setToken(newToken);
     await AsyncStorage.setItem("token", newToken);
 
-    // 🔁 Recuperar userId desde otro lado o backend
-    const savedUserId = await AsyncStorage.getItem("userId");
-    const userId = savedUserId ? parseInt(savedUserId) : null;
-
-    if (!userId) {
-      console.warn("⚠️ No hay userId guardado, no puedo hacer /me");
-      return;
-    }
-
-    const profile = await getProfile(userId);
-    setUser(profile);
+    // Traer perfil del usuario con el token
+    const profile = await getProfile();
+    setUser(profile); // ✅ user ahora tiene name, email, phoneNumber, etc.
   } finally {
     setLoading(false);
   }

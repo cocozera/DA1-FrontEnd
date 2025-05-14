@@ -1,10 +1,10 @@
 import { useContext } from 'react';
 import {
-    Pressable,
-    SafeAreaView,
-    Text,
-    TouchableOpacity,
-    View,
+  Pressable,
+  SafeAreaView,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { AuthContext } from '../context/authContext';
