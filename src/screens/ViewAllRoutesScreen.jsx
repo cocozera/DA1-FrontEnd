@@ -2,17 +2,17 @@ import { useContext, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
+  Pressable,
   SafeAreaView,
   StyleSheet,
   Text,
   ToastAndroid,
-  TouchableOpacity,
   View
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { AuthContext } from '../context/authContext';
 import { getAllRoutes } from '../services/routeService';
-import { colors, typography } from '../styles/globalStyles';
+import { baseStyles, colors, typography } from '../styles/globalStyles';
 
 export default function ViewAllRoutesScreen({ navigation }) {
   const { token } = useContext(AuthContext);
@@ -36,9 +36,7 @@ export default function ViewAllRoutesScreen({ navigation }) {
     }
   };
 
-  // Maneja el retroceso: si puede, goBack(), si no, navega a Home
   const handleGoBack = () => {
-    console.log('Back button pressed');
     if (navigation.canGoBack()) {
       navigation.goBack();
     } else {
@@ -48,31 +46,61 @@ export default function ViewAllRoutesScreen({ navigation }) {
 
   const renderSeparator = () => <View style={styles.separator} />;
 
-const renderItem = ({ item }) => (
-  <TouchableOpacity
-    onPress={() => navigation.navigate('RouteDetail', { routeId: item.id })}
-    style={styles.item}
-    activeOpacity={0.7}
-  >
-    <Text style={styles.address}>{item.address}</Text>
-    <Text>Zona: {item.zone}</Text>
-    <Text>Estado: {item.status}</Text>
-  </TouchableOpacity>
-);
+  const getStatusStyle = (status) => {
+    switch (status.toLowerCase()) {
+      case 'pendiente':
+        return { backgroundColor: '#FFC107', color: 'black' };
+      case 'completado':
+        return { backgroundColor: '#28A745', color: 'white' };
+      case 'cancelado':
+        return { backgroundColor: '#DC3545', color: 'white' };
+      default:
+        return { backgroundColor: colors.gray300, color: 'black' };
+    }
+  };
+
+  const renderItem = ({ item }) => (
+    <Pressable
+      onPress={() => navigation.navigate('RouteDetail', { routeId: item.id })}
+      style={({ pressed }) => [
+        styles.item,
+        pressed && styles.itemPressed
+      ]}
+    >
+      <View style={styles.itemHeader}>
+        <Icon name="map-marker" size={20} color={colors.primary} style={styles.icon} />
+        <Text style={styles.address}>{item.address}</Text>
+      </View>
+
+      <Text style={styles.infoText}>
+        <Text style={styles.infoText}>Zona: </Text>
+        <Text style={[styles.bold, { color: 'black' }]}>{item.zone}</Text>
+      </Text>
+
+      <Text style={styles.infoText}>
+        Estado:{' '}
+        <Text style={[styles.badge, getStatusStyle(item.status)]}>
+          {item.status}
+        </Text>
+      </Text>
+    </Pressable>
+  );
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerWrapper}>
-        <TouchableOpacity
-          style={styles.backButton}
+        <Pressable
+          style={({ pressed }) => [
+            baseStyles.backButton,
+            pressed && baseStyles.backButtonPressed, // Estilo de interacción al presionar
+          ]}
           onPress={handleGoBack}
-          activeOpacity={0.6}
         >
           <Icon name="arrow-left" size={24} color={colors.textPrimary} />
-        </TouchableOpacity>
+        </Pressable>
 
         <View style={styles.headerContainer}>
-          <Icon name="map-marker-path" size={28} color={colors.primary} />
-          <Text style={styles.headerText}>Rutas disponibles</Text>
+          <Text style={styles.headerText}>Rutas Disponibles</Text>
         </View>
       </View>
 
@@ -113,13 +141,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 24,
-    overflow: 'hidden',
   },
   headerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 24,
-    marginStart: 12,
+    marginStart: 10,
   },
   headerText: {
     ...typography.h1,
@@ -140,14 +167,50 @@ const styles = StyleSheet.create({
   separator: {
     height: 1,
     backgroundColor: colors.gray300,
+    marginVertical: 8,
   },
   item: {
-    paddingVertical: 8,
+    paddingVertical: 16,
+    paddingHorizontal: 12,
+    backgroundColor: colors.white,
+    borderRadius: 16,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    marginBottom: 12,
+    transform: [{ scale: 1 }],
+  },
+  itemPressed: {
+    transform: [{ scale: 0.98 }],
+    backgroundColor: colors.gray100,
+    elevation: 4,
+  },
+  itemHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 6,
+  },
+  icon: {
+    marginRight: 8,
   },
   address: {
     fontSize: 16,
     fontWeight: 'bold',
     color: colors.primary,
+  },
+  infoText: {
+    ...typography.body,
+    marginTop: 2,
+  },
+  badge: {
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 8,
+    overflow: 'hidden',
+    fontSize: 14,
+    fontWeight: 'bold',
   },
   center: {
     flex: 1,

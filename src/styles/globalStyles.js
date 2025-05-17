@@ -53,45 +53,16 @@ export const baseStyles = StyleSheet.create({
   inputContainer: {
     marginBottom: 16,
   },
-});
-
-// Estilos para la pantalla de perfil
-export const profileStyles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.backgroundBeige,
-    padding: 16,
-  },
   backButton: {
-    width: 40,
-    height: 40,
+    width: 48,
+    height: 48,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 10,
+    borderRadius: 24,
   },
-  headerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
-    marginLeft: 5,
-  },
-  headerText: {
-    ...typography.h1,
-    marginLeft: 12,
-  },
-  card: {
-    backgroundColor: colors.white,
-    borderRadius: 16,
-    padding: 20,
-    elevation: 4,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    shadowOffset: { width: 0, height: 2 },
-    marginTop: 8,
-  },
-  infoText: {
-    ...typography.body,
-    marginBottom: 16,
+  // Nuevo estilo para la flecha cuando se presiona
+  backButtonPressed: {
+    transform: [{ scale: 0.9 }], // Efecto de reducción al presionar
+    backgroundColor: colors.gray300, // Color de fondo cuando se presiona
   },
 });
