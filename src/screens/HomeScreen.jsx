@@ -7,10 +7,11 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { AuthContext } from '../context/authContext';
+import { getInProgressRoutes } from '../services/routeService';
 import { getProfile } from '../services/userService';
 import { colors, typography } from '../styles/globalStyles';
 
@@ -18,8 +19,9 @@ const { width } = Dimensions.get('window');
 
 export default function HomeScreen() {
   const navigation = useNavigation();
-  const { token, userId } = useContext(AuthContext);
+  const { token } = useContext(AuthContext);
   const [userName, setUserName] = useState('');
+  const [inProgressRoute, setInProgressRoute] = useState(null);
 
   useEffect(() => {
     if (!token) {
@@ -27,14 +29,28 @@ export default function HomeScreen() {
       return;
     }
     fetchUser();
+    fetchInProgressRoute();
   }, [token]);
 
   const fetchUser = async () => {
     try {
-      const data = await getProfile(userId);
+      const data = await getProfile();
       setUserName(data.name || '');
     } catch (err) {
       console.warn('Error fetching user:', err);
+    }
+  };
+
+  const fetchInProgressRoute = async () => {
+    try {
+      const routes = await getInProgressRoutes();
+      if (routes.length > 0) {
+        setInProgressRoute(routes[0]);
+      } else {
+        setInProgressRoute(null);
+      }
+    } catch (err) {
+      console.warn('Error al obtener ruta en progreso:', err);
     }
   };
 
@@ -43,6 +59,7 @@ export default function HomeScreen() {
       <ScrollView contentContainerStyle={styles.scroll}>
         <View style={styles.topBar}>
           <View style={styles.logoContainer}>
+            <Icon name="truck-fast" size={24} color={colors.textPrimary} />
             <Text style={styles.brand}>DeRemate.com</Text>
           </View>
           <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
@@ -74,6 +91,19 @@ export default function HomeScreen() {
           </View>
         </TouchableOpacity>
       </ScrollView>
+
+      {inProgressRoute && (
+        <TouchableOpacity
+          style={styles.floatingButton}
+          onPress={() =>
+            navigation.navigate('InProgressRouteDetail', {
+              routeData: inProgressRoute,
+            })
+          }
+        >
+          <Icon name="truck-check" size={30} color="#fff" />
+        </TouchableOpacity>
+      )}
     </SafeAreaView>
   );
 }
@@ -86,6 +116,7 @@ const styles = StyleSheet.create({
   scroll: {
     padding: 16,
     alignItems: 'center',
+    paddingBottom: 80,
   },
   topBar: {
     width: '100%',
@@ -134,5 +165,18 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     color: colors.textPrimary,
+  },
+  floatingButton: {
+    position: 'absolute',
+    bottom: 30,
+    right: 30,
+    backgroundColor: colors.primary,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 10,
+    zIndex: 10,
   },
 });

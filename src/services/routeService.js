@@ -9,3 +9,6 @@ export const getRouteDetails = routeId =>
 
 export const getRouteHistory = () =>
   api.get('/routes/completed-routes').then(res => res.data);
+
+export const getInProgressRoutes = () =>
+  api.get('/routes/inprogress-routes').then(res => res.data);
