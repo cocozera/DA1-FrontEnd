@@ -12,7 +12,7 @@ import {
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { AuthContext } from '../context/authContext';
 import { getProfile } from '../services/userService';
-import { colors, typography } from '../styles/globalStyles'; // Asegúrate de que la ruta sea correcta
+import { colors, typography } from '../styles/globalStyles';
 
 const { width } = Dimensions.get('window');
 
@@ -66,6 +66,7 @@ export default function HomeScreen() {
 
         <TouchableOpacity
           style={[styles.card, { marginTop: 24 }]}
+          onPress={() => navigation.navigate('CompletedRoutes')}
         >
           <View style={styles.cardContent}>
             <Icon name="history" size={40} color={colors.primary} />

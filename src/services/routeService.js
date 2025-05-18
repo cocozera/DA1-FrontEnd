@@ -8,4 +8,4 @@ export const getRouteDetails = routeId =>
   api.get(`/routes/${routeId}`).then(res => res.data);
 
 export const getRouteHistory = () =>
-  api.get('/routes/history').then(res => res.data);
+  api.get('/routes/completed-routes').then(res => res.data);
