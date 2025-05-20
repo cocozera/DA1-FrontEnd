@@ -7,7 +7,7 @@ import {
   Text,
   View
 } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'; // Importa el ícono
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { getRouteDetails } from '../services/routeService';
 import { baseStyles, colors, typography } from '../styles/globalStyles';
 
@@ -17,7 +17,6 @@ const RouteDetailScreen = () => {
   const { routeId } = route.params;
 
   const [routeDetail, setRouteDetail] = useState(null);
-  
 
   useEffect(() => {
     const fetchRouteDetails = async () => {
@@ -41,6 +40,7 @@ const RouteDetailScreen = () => {
       navigation.navigate('Home');
     }
   };
+
   const boldText = (label, value) => (
     <Text style={styles.detailText}>
       <Text style={styles.bold}>{label}</Text>
@@ -50,15 +50,15 @@ const RouteDetailScreen = () => {
 
   return (
     <View style={styles.container}>
-        <Pressable
-          style={({ pressed }) => [
-            baseStyles.backButton,
-            pressed && baseStyles.backButtonPressed, // Estilo de interacción al presionar
-          ]}
-          onPress={handleGoBack}
-        >
-          <Icon name="arrow-left" size={24} color={colors.textPrimary} />
-        </Pressable>
+      <Pressable
+        style={({ pressed }) => [
+          baseStyles.backButton,
+          pressed && baseStyles.backButtonPressed,
+        ]}
+        onPress={handleGoBack}
+      >
+        <Icon name="arrow-left" size={24} color={colors.textPrimary} />
+      </Pressable>
 
       <View style={styles.headerContainer}>
         <Text style={styles.headerText}>Detalle de la Ruta</Text>
@@ -80,6 +80,20 @@ const RouteDetailScreen = () => {
           <Text style={typography.body}>Cargando detalles...</Text>
         )}
       </View>
+
+      {/* Botón flotante QR */}
+      <Pressable
+        onPress={() => {
+          console.log('Botón QR presionado');
+          // Acá podés agregar navegación o función de escaneo en el futuro
+        }}
+        style={({ pressed }) => [
+          styles.floatingButton,
+          pressed && styles.floatingButtonPressed,
+        ]}
+      >
+        <Icon name="qrcode-scan" size={28} color="#fff" />
+      </Pressable>
     </View>
   );
 };
@@ -109,15 +123,31 @@ const styles = StyleSheet.create({
     color: colors.textPrimary,
   },
   valueText: {
-    color: 'black', // El valor estará en negro
+    color: 'black',
   },
   headerContainer: {
-    alignItems: 'center', // Alineamos el texto en el centro
-    marginVertical: 16, // Margen superior e inferior
+    alignItems: 'center',
+    marginVertical: 16,
   },
   headerText: {
     ...typography.h1,
-    color: colors.textPrimary, // Puedes ajustar el color si lo deseas
+    color: colors.textPrimary,
+  },
+  floatingButton: {
+    position: 'absolute',
+    bottom: 30,
+    right: 30,
+    backgroundColor: colors.primary,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 10,
+    zIndex: 10,
+  },
+  floatingButtonPressed: {
+    opacity: 0.7,
   },
 });
 

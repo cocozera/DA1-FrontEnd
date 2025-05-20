@@ -2,6 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useContext, useEffect, useState } from 'react';
 import {
   Dimensions,
+  RefreshControl,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -22,6 +23,7 @@ export default function HomeScreen() {
   const { token } = useContext(AuthContext);
   const [userName, setUserName] = useState('');
   const [inProgressRoute, setInProgressRoute] = useState(null);
+  const [refreshing, setRefreshing] = useState(false); // Estado de refresco
 
   useEffect(() => {
     if (!token) {
@@ -54,9 +56,21 @@ export default function HomeScreen() {
     }
   };
 
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchUser();
+    await fetchInProgressRoute();
+    setRefreshing(false);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scroll}>
+      <ScrollView
+        contentContainerStyle={styles.scroll}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
         <View style={styles.topBar}>
           <View style={styles.logoContainer}>
             <Icon name="truck-fast" size={24} color={colors.textPrimary} />
