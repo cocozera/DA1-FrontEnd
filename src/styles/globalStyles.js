@@ -53,13 +53,15 @@ export const baseStyles = StyleSheet.create({
   inputContainer: {
     marginBottom: 16,
   },
-  backButton: {
-    width: 48,
-    height: 48,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 24,
-  },
+backButton: {
+  width: 48,
+  height: 48,
+  justifyContent: 'center',
+  alignItems: 'center',
+  borderRadius: 24,
+  marginLeft: 12,  // margen a la izquierda
+  marginTop: 8,    // margen arriba
+},
   // Nuevo estilo para la flecha cuando se presiona
   backButtonPressed: {
     transform: [{ scale: 0.9 }], // Efecto de reducción al presionar

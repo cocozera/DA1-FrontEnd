@@ -21,6 +21,11 @@ export default function RegisterScreen({ navigation }) {
   const [email, setEmail]       = useState('');
   const [password, setPassword] = useState('');
   const [phone, setPhone]       = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
 
   const handleRegister = async () => {
     try {
@@ -67,9 +72,11 @@ export default function RegisterScreen({ navigation }) {
 
           <CustomTextInput
             placeholder="Contraseña"
-            secureTextEntry
+            secureTextEntry={!showPassword}
             value={password}
             onChangeText={setPassword}
+            iconRight={showPassword ? 'eye-off' : 'eye'}
+            onPressIconRight={toggleShowPassword}
           />
 
           <CustomTextInput

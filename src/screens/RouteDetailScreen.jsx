@@ -41,13 +41,6 @@ const RouteDetailScreen = () => {
     }
   };
 
-  const boldText = (label, value) => (
-    <Text style={styles.detailText}>
-      <Text style={styles.bold}>{label}</Text>
-      <Text style={styles.valueText}>{value}</Text>
-    </Text>
-  );
-
   return (
     <View style={styles.container}>
       <Pressable
@@ -62,30 +55,36 @@ const RouteDetailScreen = () => {
 
       <View style={styles.headerContainer}>
         <Text style={styles.headerText}>Detalle de la Ruta</Text>
+        <View style={styles.headerUnderline} />
       </View>
 
-      <View style={styles.card}>
-        {routeDetail ? (
-          <>
-            {boldText('ID de Ruta: ', routeDetail.id)}
-            {boldText('Zona: ', routeDetail.zone)}
-            {boldText('Estado: ', routeDetail.status)}
-            {routeDetail.packageDTO &&
-              boldText(
-                'Ubicación del Paquete en el Depósito: ',
-                routeDetail.packageDTO.depositSector
-              )}
-          </>
-        ) : (
-          <Text style={typography.body}>Cargando detalles...</Text>
-        )}
-      </View>
+      {/* Tarjeta con detalles justo abajo del título */}
+      {routeDetail ? (
+        <View style={styles.detailContainer}>
+          <Text style={styles.label}>ID de Ruta:</Text>
+          <Text style={styles.value}>{routeDetail.id}</Text>
 
-      {/* Botón flotante QR */}
+          <Text style={styles.label}>Zona:</Text>
+          <Text style={styles.value}>{routeDetail.zone}</Text>
+
+          <Text style={styles.label}>Estado:</Text>
+          <Text style={styles.value}>{routeDetail.status}</Text>
+
+          {routeDetail.packageDTO && (
+            <>
+              <Text style={styles.label}>Ubicación del Paquete en el Depósito:</Text>
+              <Text style={styles.value}>{routeDetail.packageDTO.depositSector}</Text>
+            </>
+          )}
+
+        </View>
+      ) : (
+        <Text style={typography.body}>Cargando detalles...</Text>
+      )}
+
       <Pressable
         onPress={() => {
           console.log('Botón QR presionado');
-          // Acá podés agregar navegación o función de escaneo en el futuro
         }}
         style={({ pressed }) => [
           styles.floatingButton,
@@ -104,34 +103,44 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: colors.backgroundBeige,
   },
-  card: {
-    backgroundColor: colors.white,
-    borderRadius: 8,
-    padding: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  detailText: {
-    ...typography.body,
-    marginBottom: 12,
-  },
-  bold: {
-    fontWeight: 'bold',
-    color: colors.textPrimary,
-  },
-  valueText: {
-    color: 'black',
-  },
   headerContainer: {
+    marginBottom: 20,
     alignItems: 'center',
-    marginVertical: 16,
   },
   headerText: {
     ...typography.h1,
     color: colors.textPrimary,
+    fontWeight: '700',
+  },
+  headerUnderline: {
+    marginTop: 6,
+    width: 100,
+    height: 3,
+    backgroundColor: colors.primary,
+    borderRadius: 2,
+  },
+  detailContainer: {
+    backgroundColor: colors.white,
+    borderRadius: 12,
+    paddingVertical: 20,
+    paddingHorizontal: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 5,
+  },
+  label: {
+    color: colors.primary,  // rojo igual que el ícono QR
+    fontWeight: '700',
+    fontSize: 16,
+    marginTop: 10,
+    marginBottom: 4,
+  },
+  value: {
+    fontSize: 16,
+    color: 'black',
+    marginBottom: 8,
   },
   floatingButton: {
     position: 'absolute',

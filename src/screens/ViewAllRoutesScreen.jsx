@@ -1,13 +1,13 @@
 import { useContext, useEffect, useState } from 'react';
 import {
-  ActivityIndicator,
-  FlatList,
-  Pressable,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  ToastAndroid,
-  View
+    ActivityIndicator,
+    FlatList,
+    Pressable,
+    SafeAreaView,
+    StyleSheet,
+    Text,
+    ToastAndroid,
+    View
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { AuthContext } from '../context/authContext';
@@ -88,38 +88,38 @@ export default function ViewAllRoutesScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.headerWrapper}>
-        <Pressable
+                <Pressable
           style={({ pressed }) => [
             baseStyles.backButton,
-            pressed && baseStyles.backButtonPressed, // Estilo de interacción al presionar
+            pressed && baseStyles.backButtonPressed,
           ]}
           onPress={handleGoBack}
         >
           <Icon name="arrow-left" size={24} color={colors.textPrimary} />
         </Pressable>
+      <View style={styles.headerWrapper}>
+
 
         <View style={styles.headerContainer}>
           <Text style={styles.headerText}>Rutas Disponibles</Text>
+          <View style={styles.headerUnderline} />
         </View>
       </View>
 
-      <View style={styles.card}>
-        {loading ? (
-          <View style={styles.center}>
-            <ActivityIndicator size="large" color={colors.primary} />
-          </View>
-        ) : (
-          <FlatList
-            data={routes}
-            keyExtractor={(r) => String(r.id)}
-            renderItem={renderItem}
-            ItemSeparatorComponent={renderSeparator}
-            contentContainerStyle={styles.list}
-            showsVerticalScrollIndicator
-          />
-        )}
-      </View>
+      {loading ? (
+        <View style={styles.center}>
+          <ActivityIndicator size="large" color={colors.primary} />
+        </View>
+      ) : (
+        <FlatList
+          data={routes}
+          keyExtractor={(r) => String(r.id)}
+          renderItem={renderItem}
+          ItemSeparatorComponent={renderSeparator}
+          contentContainerStyle={styles.list}
+          showsVerticalScrollIndicator
+        />
+      )}
     </SafeAreaView>
   );
 }
@@ -128,41 +128,36 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.backgroundBeige,
+    padding: 16,
   },
   headerWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 12,
-    paddingTop: 12,
-  },
-  backButton: {
-    width: 48,
-    height: 48,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 24,
+    height: 64,
+    justifyContent: 'flex-start',
+    marginTop: 0,
   },
   headerContainer: {
-    flexDirection: 'row',
+    flex: 1,
+    marginLeft: 8,
+    marginBottom: 20,
     alignItems: 'center',
-    paddingHorizontal: 24,
-    marginStart: 10,
   },
   headerText: {
     ...typography.h1,
-    marginStart: 12,
+    color: colors.textPrimary,
+    fontWeight: '700',
   },
-  card: {
-    flex: 1,
-    marginHorizontal: 16,
-    marginVertical: 16,
-    borderRadius: 24,
-    backgroundColor: colors.white,
-    elevation: 8,
-    overflow: 'hidden',
+  headerUnderline: {
+    marginTop: 6,
+    width: 100,
+    height: 3,
+    backgroundColor: colors.primary,
+    borderRadius: 2,
   },
   list: {
-    padding: 20,
+    paddingVertical: 20,
+    marginTop: 0,
   },
   separator: {
     height: 1,
