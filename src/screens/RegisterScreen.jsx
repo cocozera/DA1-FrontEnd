@@ -30,7 +30,9 @@ export default function RegisterScreen({ navigation }) {
         password,
         phoneNumber: phone
       });
-      // tras registro exitoso el navigator cambiará al flujo autenticado
+
+      // Tras registro exitoso, navegar a la pantalla de verificación
+      navigation.navigate('TokenVerification', { email });
     } catch (err) {
       console.error(err);
       Alert.alert('Error', err.message || 'Fallo de registro');

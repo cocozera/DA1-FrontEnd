@@ -69,5 +69,17 @@ export const recoverPassword = async ({ email }) => {
     return { success: false, error: msg };
   }
 };
-
+export const verifyToken = async ({ email, token }) => {
+  try {
+     console.log('Enviando a /auth/verify:', { email, code: token  });
+    const { data } = await api.post('/auth/verify', {
+      email,
+      code: token,
+    });
+    return { success: true, data };
+  } catch (err) {
+    console.error('❌ Error en verifyToken:', err.response?.data || err.message);
+    return { success: false, error: err.response?.data || err.message };
+  }
+};
 

@@ -53,9 +53,7 @@ const login = async ({ email, password }) => {
     try {
       const { token: newToken, user: userData } = await registerApi(data);
       console.log("🆕 Registro exitoso, token:", newToken, "user:", userData);
-      setToken(newToken);
-      setUser(userData);
-      await AsyncStorage.setItem("token", newToken);
+      
     } finally {
       setLoading(false);
       console.log("🔄 AuthContext.register terminó");

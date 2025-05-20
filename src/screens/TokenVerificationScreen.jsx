@@ -1,19 +1,20 @@
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useState } from 'react';
 import {
-    Alert,
-    KeyboardAvoidingView,
-    Platform,
-    SafeAreaView,
-    StatusBar,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
 } from 'react-native';
 import CustomButton from '../components/CustomButton';
 import { verifyToken } from '../services/authService';
-import { baseStyles, colors } from '../styles/globalStyles';
+import { colors, typography } from '../styles/globalStyles';
 
 export default function TokenVerificationScreen() {
   const navigation = useNavigation();
@@ -27,10 +28,10 @@ export default function TokenVerificationScreen() {
     try {
       const response = await verifyToken({ email: email.trim(), token: code.trim() });
       if (response.success) {
-        Alert.alert('Cuenta verificada correctamente ✅');
+        Alert.alert('✅ Cuenta verificada', 'Ahora podés iniciar sesión');
         navigation.navigate('Login');
       } else {
-        Alert.alert('Código inválido ❌');
+        Alert.alert('❌ Código inválido');
       }
     } catch (err) {
       Alert.alert('Error de red', err.message);
@@ -39,17 +40,21 @@ export default function TokenVerificationScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar backgroundColor={colors.backgroundBeige} barStyle="dark-content" />
+      <StatusBar
+        barStyle="dark-content"
+        backgroundColor={colors.backgroundBeige}
+      />
+
       <KeyboardAvoidingView
         style={styles.wrapper}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        <Text style={styles.title}>Verificar Cuenta</Text>
-
         <View style={styles.card}>
-          <View style={baseStyles.inputContainer}>
+          <Text style={styles.title}>Verificar Cuenta</Text>
+
+          <View style={styles.inputContainer}>
             <TextInput
-              style={baseStyles.input}
+              style={styles.input}
               placeholder="Correo electrónico"
               value={email}
               onChangeText={setEmail}
@@ -58,9 +63,9 @@ export default function TokenVerificationScreen() {
             />
           </View>
 
-          <View style={baseStyles.inputContainer}>
+          <View style={styles.inputContainer}>
             <TextInput
-              style={baseStyles.input}
+              style={styles.input}
               placeholder="Código de verificación"
               value={code}
               onChangeText={setCode}
@@ -68,7 +73,11 @@ export default function TokenVerificationScreen() {
             />
           </View>
 
-          <CustomButton text="Verificar" onPress={handleVerify} />
+          <CustomButton title="Verificar" onPress={handleVerify} />
+
+          <Text style={styles.infoText}>
+            Nota: Se te envió un código a tu correo. Revisá tu bandeja de entrada o spam.
+          </Text>
         </View>
 
         <TouchableOpacity onPress={() => navigation.navigate('Login')}>
@@ -78,3 +87,52 @@ export default function TokenVerificationScreen() {
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: colors.backgroundBeige,
+  },
+  wrapper: {
+    flex: 1,
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+  },
+  card: {
+    backgroundColor: colors.white,
+    borderRadius: 20,
+    padding: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  title: {
+    ...typography.h1,
+    textAlign: 'center',
+    marginBottom: 24,
+  },
+  inputContainer: {
+    backgroundColor: '#F5F5F5',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: Platform.OS === 'ios' ? 14 : 10,
+    marginBottom: 16,
+  },
+  input: {
+    fontSize: 16,
+    color: '#333',
+  },
+  infoText: {
+    ...typography.body,
+    color: '#4E342E',
+    textAlign: 'center',
+    marginTop: 16,
+  },
+  linkText: {
+    ...typography.link,
+    textAlign: 'center',
+    marginTop: 24,
+  },
+});
