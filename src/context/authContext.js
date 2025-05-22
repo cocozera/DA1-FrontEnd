@@ -1,9 +1,7 @@
-// src/context/authContext.js
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as SecureStore from "expo-secure-store";
 import { createContext, useEffect, useState } from "react";
 import { loginApi, registerApi } from "../services/authService";
 import { getProfile } from '../services/userService';
-
 
 export const AuthContext = createContext({});
 
@@ -16,36 +14,38 @@ export const AuthProvider = ({ children }) => {
   console.log("👤 AuthProvider render, token:", token);
 
   useEffect(() => {
-    console.log("⏳ AuthProvider cargando token desde AsyncStorage");
+    console.log("⏳ AuthProvider cargando token desde SecureStore");
     (async () => {
-      const savedToken = await AsyncStorage.getItem("token");
+      const savedToken = await SecureStore.getItemAsync("token");
       if (savedToken) {
         console.log("✅ Token encontrado:", savedToken);
         setToken(savedToken);
-        // opcional: fetch /me para poblar `user`
+        try {
+          const profile = await getProfile();
+          setUser(profile);
+        } catch (e) {
+          console.log("⚠️ Error obteniendo perfil con token guardado:", e);
+        }
       } else {
         console.log("🚫 No hay token guardado");
       }
       setInitializing(false);
     })();
   }, []);
-  
-const login = async ({ email, password }) => {
-  setLoading(true);
-  try {
-    const { token: newToken } = await loginApi({ email, password });
-    
-    // Guardar token en estado y en storage
-    setToken(newToken);
-    await AsyncStorage.setItem("token", newToken);
 
-    // Traer perfil del usuario con el token
-    const profile = await getProfile();
-    setUser(profile); // ✅ user ahora tiene name, email, phoneNumber, etc.
-  } finally {
-    setLoading(false);
-  }
-};
+  const login = async ({ email, password }) => {
+    setLoading(true);
+    try {
+      const { token: newToken } = await loginApi({ email, password });
+      setToken(newToken);
+      await SecureStore.setItemAsync("token", newToken);
+
+      const profile = await getProfile();
+      setUser(profile);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const register = async (data) => {
     console.log("🔄 AuthContext.register iniciando con:", data);
@@ -53,7 +53,9 @@ const login = async ({ email, password }) => {
     try {
       const { token: newToken, user: userData } = await registerApi(data);
       console.log("🆕 Registro exitoso, token:", newToken, "user:", userData);
-      
+      setToken(newToken);
+      await SecureStore.setItemAsync("token", newToken);
+      setUser(userData);
     } finally {
       setLoading(false);
       console.log("🔄 AuthContext.register terminó");
@@ -64,7 +66,7 @@ const login = async ({ email, password }) => {
     console.log("🚪 AuthContext.logout");
     setUser(null);
     setToken(null);
-    await AsyncStorage.removeItem("token");
+    await SecureStore.deleteItemAsync("token");
   };
 
   if (initializing) return null;

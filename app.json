@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "DA1-FrontEnd",
-   "entryPoint": "src/App.js",
+    "entryPoint": "src/App.js",
     "slug": "DA1-FrontEnd",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -24,6 +24,9 @@
     },
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "plugins": [
+      "expo-secure-store"
+    ]
   }
 }
