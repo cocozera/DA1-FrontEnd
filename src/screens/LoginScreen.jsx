@@ -28,13 +28,19 @@ export default function LoginScreen({ navigation }) {
         text1: 'Completa todos los campos',
       });
     }
-    try {
-      await login({ email, password });
-      navigation.replace('Home');
-    } catch (err) {
-      Toast.show({ type: 'error', text1: err.message });
-    }
-  };
+  try {
+    await login({ email, password });
+    navigation.replace('Home');
+  } catch (err) {
+    const errorMessage = err.message.toLowerCase().includes('invalid credentials')
+      ? 'Credenciales inválidas.'
+      : err.message;
+    Toast.show({
+      type: 'error',
+      text1: errorMessage,
+    });
+  }
+};
 
   return (
     <SafeAreaView style={styles.safeArea}>

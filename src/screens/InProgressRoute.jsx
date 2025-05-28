@@ -1,11 +1,11 @@
 import { useNavigation, useRoute } from '@react-navigation/native';
 import {
-    SafeAreaView,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Pressable,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { baseStyles, colors, typography } from '../styles/globalStyles';
@@ -32,12 +32,15 @@ export default function InProgressRoute() {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.content}>
-        <TouchableOpacity
-          style={baseStyles.backButton}
+        <Pressable
           onPress={() => navigation.goBack()}
+          style={({ pressed }) => [
+            baseStyles.backButton,
+            pressed && baseStyles.backButtonPressed, 
+          ]}
         >
-          <Icon name="arrow-left" size={28} color={colors.textPrimary} />
-        </TouchableOpacity>
+          <Icon name="arrow-left" size={24} color={colors.textPrimary} />
+        </Pressable>
 
         <Text style={styles.title}>Ruta en Progreso</Text>
 

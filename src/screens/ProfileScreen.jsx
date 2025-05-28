@@ -20,20 +20,21 @@ export default function ProfileScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       {/* Botón Back con estilo global */}
-        <Pressable
-          style={({ pressed }) => [
-            baseStyles.backButton,
-            pressed && baseStyles.backButtonPressed, // Estilo de interacción al presionar
-          ]}
-          onPress={handleBack}
-        >
-          <Icon name="arrow-left" size={24} color={colors.textPrimary} />
-        </Pressable>
+      <Pressable
+        style={({ pressed }) => [
+          baseStyles.backButton,
+          pressed && baseStyles.backButtonPressed, // Estilo de interacción al presionar
+        ]}
+        onPress={handleBack}
+      >
+        <Icon name="arrow-left" size={24} color={colors.textPrimary} />
+      </Pressable>
 
       {/* Header */}
       <View style={styles.headerContainer}>
-        <Icon name="account-circle-outline" size={40} color={colors.primary} />
-        <Text style={styles.headerText}>Perfil de Usuario</Text>
+          
+          <Text style={styles.headerText}>Perfil de Usuario</Text>
+        <View style={styles.headerUnderline} />
       </View>
 
       {/* Card de perfil */}
@@ -59,17 +60,25 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.backgroundBeige,
-    padding: 20,
+    padding: 16,
   },
+
   headerContainer: {
-    flexDirection: 'row',
+    marginBottom: 20,
     alignItems: 'center',
-    marginBottom: 30,
+    marginTop: 0,
   },
   headerText: {
     ...typography.h1,
-    marginLeft: 15,
     color: colors.textPrimary,
+    fontWeight: '700', 
+  },
+  headerUnderline: {
+    marginTop: 6,
+    width: 100,
+    height: 3,
+    backgroundColor: colors.primary,
+    borderRadius: 2,
   },
   card: {
     backgroundColor: colors.white,

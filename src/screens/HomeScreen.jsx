@@ -2,12 +2,12 @@ import { useNavigation } from '@react-navigation/native';
 import { useContext, useEffect, useState } from 'react';
 import {
   Dimensions,
+  Pressable,
   RefreshControl,
   SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -23,7 +23,7 @@ export default function HomeScreen() {
   const { token } = useContext(AuthContext);
   const [userName, setUserName] = useState('');
   const [inProgressRoute, setInProgressRoute] = useState(null);
-  const [refreshing, setRefreshing] = useState(false); // Estado de refresco
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     if (!token) {
@@ -76,16 +76,16 @@ export default function HomeScreen() {
             <Icon name="truck-fast" size={24} color={colors.textPrimary} />
             <Text style={styles.brand}>DeRemate.com</Text>
           </View>
-          <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
-            <Icon name="account-circle" size={40} color={colors.textPrimary} />
-          </TouchableOpacity>
+          <Pressable onPress={() => navigation.navigate('Profile')}>
+            <Icon name="account-circle" size={48} color={colors.textPrimary} />
+          </Pressable>
         </View>
 
         <Text style={styles.title}>
           ¡Bienvenido{userName ? `, ${userName}` : ''}!
         </Text>
 
-        <TouchableOpacity
+        <Pressable
           style={styles.card}
           onPress={() => navigation.navigate('ViewAllRoutes')}
         >
@@ -93,9 +93,9 @@ export default function HomeScreen() {
             <Icon name="map-marker-path" size={40} color={colors.primary} />
             <Text style={styles.cardText}>Rutas Disponibles</Text>
           </View>
-        </TouchableOpacity>
+        </Pressable>
 
-        <TouchableOpacity
+        <Pressable
           style={[styles.card, { marginTop: 24 }]}
           onPress={() => navigation.navigate('CompletedRoutes')}
         >
@@ -103,11 +103,11 @@ export default function HomeScreen() {
             <Icon name="history" size={40} color={colors.primary} />
             <Text style={styles.cardText}>Historial de Rutas</Text>
           </View>
-        </TouchableOpacity>
+        </Pressable>
       </ScrollView>
 
       {inProgressRoute && (
-        <TouchableOpacity
+        <Pressable
           style={styles.floatingButton}
           onPress={() =>
             navigation.navigate('InProgressRouteDetail', {
@@ -116,7 +116,7 @@ export default function HomeScreen() {
           }
         >
           <Icon name="truck-check" size={30} color="#fff" />
-        </TouchableOpacity>
+        </Pressable>
       )}
     </SafeAreaView>
   );

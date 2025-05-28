@@ -1,13 +1,13 @@
 import { useContext, useEffect, useState } from 'react';
 import {
-    ActivityIndicator,
-    FlatList,
-    Pressable,
-    SafeAreaView,
-    StyleSheet,
-    Text,
-    ToastAndroid,
-    View
+  ActivityIndicator,
+  FlatList,
+  Pressable,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  ToastAndroid,
+  View
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { AuthContext } from '../context/authContext';
@@ -133,14 +133,14 @@ const styles = StyleSheet.create({
   headerWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: 64,
+    height: 65,
     justifyContent: 'flex-start',
     marginTop: 0,
   },
   headerContainer: {
     flex: 1,
     marginLeft: 8,
-    marginBottom: 20,
+    marginBottom: 10,
     alignItems: 'center',
   },
   headerText: {

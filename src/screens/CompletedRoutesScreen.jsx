@@ -1,20 +1,20 @@
 import { useNavigation } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
 import {
-    ActivityIndicator,
-    FlatList,
-    SafeAreaView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  FlatList,
+  Pressable,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { getRouteHistory } from '../services/routeService';
 import {
-    baseStyles,
-    colors,
-    typography,
+  baseStyles,
+  colors,
+  typography,
 } from '../styles/globalStyles';
 
 export default function CompletedRoutesScreen() {
@@ -66,12 +66,16 @@ export default function CompletedRoutesScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <TouchableOpacity
-        style={[baseStyles.backButton, styles.backButtonContainer]}
+      <Pressable
         onPress={() => navigation.goBack()}
+        style={({ pressed }) => [
+          baseStyles.backButton,
+          styles.backButtonContainer,
+          pressed && baseStyles.backButtonPressed, // si tienes un estilo para el efecto de presión
+        ]}
       >
         <Icon name="arrow-left" size={24} color={colors.textPrimary} />
-      </TouchableOpacity>
+      </Pressable>
 
       <View style={styles.header}>
         <Icon name="map-marker" size={24} color={colors.primary} />
