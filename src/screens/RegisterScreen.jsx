@@ -3,11 +3,11 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
+  Pressable,
   SafeAreaView,
   StatusBar,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View
 } from 'react-native';
 import CustomButton from '../components/CustomButton';
@@ -92,14 +92,15 @@ export default function RegisterScreen({ navigation }) {
             loading={loading}
           />
 
-          <TouchableOpacity
-            style={styles.bottomLink}
-            onPress={() => navigation.navigate('Login')}
-          >
-            <Text style={styles.bottomLinkText}>
-              ¿Ya tenés cuenta? Inicia sesión
-            </Text>
-          </TouchableOpacity>
+          <View style={styles.bottomLink}>
+            <Pressable onPress={() => navigation.navigate('Login')}>
+              {({ pressed }) => (
+                <Text style={[styles.linkText, pressed && styles.pressedText]}>
+                  ¿Ya tenés cuenta? Inicia sesión
+                </Text>
+              )}
+            </Pressable>
+          </View>
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -135,7 +136,12 @@ const styles = StyleSheet.create({
     marginTop: 24,
     alignItems: 'center',
   },
-  bottomLinkText: {
+  pressedText: {
+    opacity: 0.7,
+    transform: [{ scale: 0.97 }],
+  },
+  linkText: {
     ...typography.link,
+    color: colors.primary,
   },
 });

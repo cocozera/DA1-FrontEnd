@@ -4,12 +4,12 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
+  Pressable,
   SafeAreaView,
   StatusBar,
   StyleSheet,
   Text,
   TextInput,
-  TouchableOpacity,
   View
 } from 'react-native';
 import CustomButton from '../components/CustomButton';
@@ -80,9 +80,13 @@ export default function TokenVerificationScreen() {
           </Text>
         </View>
 
-        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-          <Text style={styles.linkText}>¿Ya tienes cuenta? Inicia sesión</Text>
-        </TouchableOpacity>
+        <Pressable onPress={() => navigation.navigate('Login')}>
+          {({ pressed }) => (
+            <Text style={[styles.linkText, pressed && styles.pressedText]}>
+              ¿Ya tienes cuenta? Inicia sesión
+            </Text>
+          )}
+        </Pressable>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -130,6 +134,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 16,
   },
+  pressedText: {
+    opacity: 0.7,
+    transform: [{ scale: 0.97 }],
+  },
+
   linkText: {
     ...typography.link,
     textAlign: 'center',

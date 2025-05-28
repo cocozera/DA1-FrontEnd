@@ -2,10 +2,10 @@ import { useContext, useState } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
+  Pressable,
   SafeAreaView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View
 } from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -80,22 +80,28 @@ export default function LoginScreen({ navigation }) {
             onPress={handleLogin}
             loading={loading}
           />
-
           <View style={styles.links}>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('RecoverPassword')}
-            >
-              <Text style={styles.linkText}>¿Olvidaste tu contraseña?</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
+            <Pressable onPress={() => navigation.navigate('RecoverPassword')}>
+              {({ pressed }) => (
+                <Text style={[styles.linkText, pressed && styles.pressedText]}>
+                  ¿Olvidaste tu contraseña?
+                </Text>
+              )}
+            </Pressable>
+
+            <Pressable
               onPress={() => navigation.navigate('Register')}
               style={{ marginTop: 8 }}
             >
-              <Text style={styles.linkText}>
-                ¿No tenés cuenta? Registrate ahora
-              </Text>
-            </TouchableOpacity>
+              {({ pressed }) => (
+                <Text style={[styles.linkText, pressed && styles.pressedText]}>
+                  ¿No tenés cuenta? Registrate ahora
+                </Text>
+              )}
+            </Pressable>
           </View>
+
+
         </View>
       </KeyboardAvoidingView>
       <Toast />
@@ -135,6 +141,11 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 5,
   },
+  pressedText: {
+  opacity: 0.7,
+  transform: [{ scale: 0.97 }],
+  },
+
   title: {
     ...typography.h1,
     textAlign: 'center',
