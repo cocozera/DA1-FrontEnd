@@ -43,6 +43,11 @@ export default function CompletedRoutesScreen() {
     }
   };
 
+  const handleGoBack = () => {
+    if (navigation.canGoBack()) navigation.goBack();
+    else navigation.navigate('Home');
+  };
+
   const getStatusColor = status => {
     switch ((status || '').toUpperCase()) {
       case 'COMPLETED': return '#2ECC71';
@@ -69,24 +74,29 @@ export default function CompletedRoutesScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* Flecha de regreso */}
       <Pressable
-        onPress={() => navigation.goBack()}
+        onPress={handleGoBack}
         style={({ pressed }) => [
           baseStyles.backButton,
-          styles.backButtonContainer,
           pressed && baseStyles.backButtonPressed,
         ]}
       >
         <Icon name="arrow-left" size={24} color={colors.textPrimary} />
       </Pressable>
 
-      <View style={styles.header}>
-        <Icon name="map-marker" size={24} color={colors.primary} />
-        <Text style={styles.headerTitle}>Historial de Rutas Completadas</Text>
+      {/* Título centrado + línea de subrayado */}
+      <View style={styles.headerContainer}>
+        <Text style={styles.headerText}>Historial de Rutas Completadas</Text>
+        <View style={styles.headerUnderline} />
       </View>
 
       {loading ? (
-        <ActivityIndicator size="large" color={colors.primary} style={styles.loader}/>
+        <ActivityIndicator
+          size="large"
+          color={colors.primary}
+          style={styles.loader}
+        />
       ) : routes.length === 0 ? (
         <Text style={styles.empty}>No hay rutas completadas.</Text>
       ) : (
@@ -95,6 +105,7 @@ export default function CompletedRoutesScreen() {
           keyExtractor={item => String(item.id)}
           renderItem={renderRoute}
           contentContainerStyle={styles.list}
+          showsVerticalScrollIndicator={false}
         />
       )}
     </SafeAreaView>
@@ -107,20 +118,22 @@ const styles = StyleSheet.create({
     backgroundColor: colors.backgroundBeige,
     padding: 16,
   },
-  backButtonContainer: {
-    alignSelf: 'flex-start',
-    marginBottom: 8,
-  },
-  header: {
-    flexDirection: 'row',
+  headerContainer: {
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 20, // igual que en RouteDetailScreen
   },
-  headerTitle: {
+  headerText: {
     ...typography.h1,
-    fontSize: 20,
-    marginLeft: 8,
     color: colors.textPrimary,
+    fontWeight: '700',
+    textAlign: 'center',
+  },
+  headerUnderline: {
+    marginTop: 6,
+    width: 100,
+    height: 3,
+    backgroundColor: colors.primary,
+    borderRadius: 2,
   },
   loader: {
     flex: 1,

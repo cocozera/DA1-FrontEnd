@@ -1,3 +1,5 @@
+// src/screens/ViewAllRoutesScreen.js
+import { useNavigation } from '@react-navigation/native';
 import { useContext, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
@@ -7,15 +9,17 @@ import {
   StyleSheet,
   Text,
   ToastAndroid,
-  View
+  View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { AuthContext } from '../context/authContext';
 import { getAllRoutes } from '../services/routeService';
 import { baseStyles, colors, typography } from '../styles/globalStyles';
 
-export default function ViewAllRoutesScreen({ navigation }) {
+export default function ViewAllRoutesScreen() {
+  const navigation = useNavigation();
   const { token } = useContext(AuthContext);
+
   const [routes, setRoutes] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -28,7 +32,6 @@ export default function ViewAllRoutesScreen({ navigation }) {
     try {
       const { success, data, error } = await getAllRoutes();
       if (!success) {
-        // Mensaje amigable según el tipo de error
         const msg = error.includes('No static resource')
           ? 'No hay rutas disponibles.'
           : 'No se pudieron cargar las rutas. Inténtalo más tarde.';
@@ -47,10 +50,9 @@ export default function ViewAllRoutesScreen({ navigation }) {
   };
 
   const handleGoBack = () => {
-    navigation.canGoBack() ? navigation.goBack() : navigation.navigate('Home');
+    if (navigation.canGoBack()) navigation.goBack();
+    else navigation.navigate('Home');
   };
-
-  const renderSeparator = () => <View style={styles.separator} />;
 
   const getStatusStyle = status => {
     switch (status?.toLowerCase()) {
@@ -65,13 +67,20 @@ export default function ViewAllRoutesScreen({ navigation }) {
     }
   };
 
+  const renderSeparator = () => <View style={styles.separator} />;
+
   const renderItem = ({ item }) => (
     <Pressable
       onPress={() => navigation.navigate('RouteDetail', { routeId: item.id })}
       style={({ pressed }) => [styles.item, pressed && styles.itemPressed]}
     >
       <View style={styles.itemHeader}>
-        <Icon name="map-marker" size={20} color={colors.primary} style={styles.icon} />
+        <Icon
+          name="map-marker"
+          size={20}
+          color={colors.primary}
+          style={styles.icon}
+        />
         <Text style={styles.address}>{item.address}</Text>
       </View>
 
@@ -91,13 +100,18 @@ export default function ViewAllRoutesScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* Flecha de regreso */}
       <Pressable
-        style={({ pressed }) => [baseStyles.backButton, pressed && baseStyles.backButtonPressed]}
         onPress={handleGoBack}
+        style={({ pressed }) => [
+          baseStyles.backButton,
+          pressed && baseStyles.backButtonPressed,
+        ]}
       >
         <Icon name="arrow-left" size={24} color={colors.textPrimary} />
       </Pressable>
 
+      {/* Título centrado + línea */}
       <View style={styles.headerContainer}>
         <Text style={styles.headerText}>Rutas Disponibles</Text>
         <View style={styles.headerUnderline} />
@@ -131,7 +145,7 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: 20,           // mismo margen que en RouteDetail
   },
   headerText: {
     ...typography.h1,
@@ -173,7 +187,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 6,
   },
-  icon: { marginRight: 8 },
+  icon: {
+    marginRight: 8,
+  },
   address: {
     fontSize: 16,
     fontWeight: 'bold',
@@ -201,5 +217,8 @@ const styles = StyleSheet.create({
     marginTop: 24,
     textAlign: 'center',
     color: colors.textSecondary,
+  },
+  bold: {
+    fontWeight: '700',
   },
 });
