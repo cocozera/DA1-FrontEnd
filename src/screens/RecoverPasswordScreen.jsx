@@ -1,3 +1,4 @@
+// src/screens/RecoverPasswordScreen.js
 import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
 import {
@@ -8,11 +9,12 @@ import {
   SafeAreaView,
   StatusBar,
   StyleSheet,
-  Text,
-  View
+  View,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
+
 import CustomButton from '../components/CustomButton';
+import CustomText from '../components/CustomText'; // ← import CustomText
 import CustomTextInput from '../components/CustomTextInput';
 import { recoverPassword } from '../services/authService';
 import { colors, typography } from '../styles/globalStyles';
@@ -26,12 +28,12 @@ export default function RecoverPasswordScreen() {
       const response = await recoverPassword({ email });
       if (response.success) {
         Toast.show({
-        type: 'success',
-        text1: '✅ Código enviado',
-        text2: 'Revisá tu correo electrónico',
-        position: 'top',
-      });
-      navigation.navigate('ChangePassword', { email });
+          type: 'success',
+          text1: '✅ Código enviado',
+          text2: 'Revisá tu correo electrónico',
+          position: 'top',
+        });
+        navigation.navigate('ChangePassword', { email });
       } else {
         Alert.alert('Error', 'Correo no registrado');
       }
@@ -56,29 +58,31 @@ export default function RecoverPasswordScreen() {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
         <View style={styles.card}>
-          <Text style={styles.title}>Recuperar Contraseña</Text>
+          <CustomText style={styles.title}>
+            Recuperar Contraseña
+          </CustomText>
 
           <CustomTextInput
             placeholder="Correo electrónico"
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
-            icon="mail"
           />
 
           <CustomButton title="Enviar código" onPress={handleSendCode} />
 
-
-          <Text style={styles.infoText}>
+          <CustomText style={styles.infoText}>
             Nota: se le enviará un código a su casilla de mail
-          </Text>
+          </CustomText>
         </View>
 
         <Pressable onPress={goToLogin}>
           {({ pressed }) => (
-            <Text style={[styles.linkText, pressed && styles.pressedText]}>
+            <CustomText
+              style={[styles.linkText, pressed && styles.pressedText]}
+            >
               ¿Ya tienes cuenta? Inicia sesión
-            </Text>
+            </CustomText>
           )}
         </Pressable>
       </KeyboardAvoidingView>
@@ -107,23 +111,24 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   title: {
-    ...typography.h1,
+    ...typography.h1,        // Montserrat-Bold, size 28
     textAlign: 'center',
     marginBottom: 24,
+    color: colors.textPrimary,
   },
   infoText: {
-    ...typography.body,
+    ...typography.body,      // Montserrat-Regular, size 16
     color: '#4E342E',
     textAlign: 'center',
     marginTop: 16,
   },
+  linkText: {
+    ...typography.link,      // Montserrat-Regular, size 16
+    textAlign: 'center',
+    marginTop: 24,
+  },
   pressedText: {
     opacity: 0.7,
     transform: [{ scale: 0.97 }],
-  },
-  linkText: {
-    ...typography.link,
-    textAlign: 'center',
-    marginTop: 24,
   },
 });

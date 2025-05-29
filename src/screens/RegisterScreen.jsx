@@ -1,3 +1,4 @@
+// src/screens/RegisterScreen.js
 import { useContext, useState } from 'react';
 import {
   Alert,
@@ -7,10 +8,12 @@ import {
   SafeAreaView,
   StatusBar,
   StyleSheet,
-  Text,
-  View
+  View,
 } from 'react-native';
+import Toast from 'react-native-toast-message';
+
 import CustomButton from '../components/CustomButton';
+import CustomText from '../components/CustomText'; // ← import CustomText
 import CustomTextInput from '../components/CustomTextInput';
 import { AuthContext } from '../context/authContext';
 import { colors, typography } from '../styles/globalStyles';
@@ -26,7 +29,6 @@ export default function RegisterScreen({ navigation }) {
   const toggleShowPassword = () => setShowPassword(prev => !prev);
 
   const handleRegister = async () => {
-    // 1) Validación de campos
     if (!name.trim()) {
       return Alert.alert('Error', 'Por favor ingresa tu nombre');
     }
@@ -42,10 +44,8 @@ export default function RegisterScreen({ navigation }) {
 
     try {
       await register({ name, email, password, phoneNumber: phone });
-      // Si sale bien, vamos a verificación de token
       navigation.navigate('TokenVerification', { email });
     } catch (err) {
-      // 2) Manejo de todo tipo de errores
       let msg = err.message || 'Fallo de registro';
       if (msg.toLowerCase().includes('servidor no disponible')) {
         msg = 'No se pudo conectar con el servidor. Inténtalo más tarde.';
@@ -65,7 +65,8 @@ export default function RegisterScreen({ navigation }) {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
         <View style={styles.card}>
-          <Text style={styles.title}>Registro</Text>
+          {/* Título */}
+          <CustomText style={styles.title}>Registro</CustomText>
 
           <CustomTextInput
             placeholder="Nombre"
@@ -114,19 +115,17 @@ export default function RegisterScreen({ navigation }) {
               disabled={loading}
             >
               {({ pressed }) => (
-                <Text
-                  style={[
-                    styles.linkText,
-                    pressed && styles.pressedText
-                  ]}
+                <CustomText
+                  style={[styles.linkText, pressed && styles.pressedText]}
                 >
                   ¿Ya tenés cuenta? Inicia sesión
-                </Text>
+                </CustomText>
               )}
             </Pressable>
           </View>
         </View>
       </KeyboardAvoidingView>
+      <Toast />
     </SafeAreaView>
   );
 }
@@ -152,20 +151,21 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   title: {
-    ...typography.h1,
+    ...typography.h1,   // Montserrat-Bold, size 28
     textAlign: 'center',
     marginBottom: 24,
+    color: colors.textPrimary,
   },
   bottomLink: {
     marginTop: 24,
     alignItems: 'center',
   },
+  linkText: {
+    ...typography.link, // Montserrat-Regular, size 16
+    color: colors.primary,
+  },
   pressedText: {
     opacity: 0.7,
     transform: [{ scale: 0.97 }],
-  },
-  linkText: {
-    ...typography.link,
-    color: colors.primary,
   },
 });

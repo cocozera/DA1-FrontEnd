@@ -7,11 +7,12 @@ import {
   Pressable,
   SafeAreaView,
   StyleSheet,
-  Text,
   ToastAndroid,
   View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
+import CustomText from '../components/CustomText'; // ← importamos CustomText
 import { getRouteHistory } from '../services/routeService';
 import { baseStyles, colors, typography } from '../styles/globalStyles';
 
@@ -58,17 +59,17 @@ export default function CompletedRoutesScreen() {
 
   const renderRoute = ({ item }) => (
     <View style={styles.card}>
-      <Text style={styles.address}>{item.address}</Text>
-      <Text style={styles.detail}>Inicio: {item.startedAt}</Text>
-      <Text style={styles.detail}>Fin: {item.finishedAt}</Text>
-      <Text style={styles.detail}>Zona: {item.zone}</Text>
-      <Text style={styles.detail}>
+      <CustomText style={styles.address}>{item.address}</CustomText>
+      <CustomText style={styles.detail}>Inicio: {item.startedAt}</CustomText>
+      <CustomText style={styles.detail}>Fin: {item.finishedAt}</CustomText>
+      <CustomText style={styles.detail}>Zona: {item.zone}</CustomText>
+      <CustomText style={styles.detail}>
         Cliente: {item.packageDTO?.receptor ?? 'No disponible'}
-      </Text>
+      </CustomText>
       <View style={styles.divider} />
-      <Text style={[styles.status, { color: getStatusColor(item.status) }]}>
+      <CustomText style={[styles.status, { color: getStatusColor(item.status) }]}>
         Estado: {item.status}
-      </Text>
+      </CustomText>
     </View>
   );
 
@@ -87,7 +88,9 @@ export default function CompletedRoutesScreen() {
 
       {/* Título centrado + línea de subrayado */}
       <View style={styles.headerContainer}>
-        <Text style={styles.headerText}>Historial de Rutas Completadas</Text>
+        <CustomText style={styles.headerText}>
+          Historial de Rutas{'\n'}Completadas
+        </CustomText>
         <View style={styles.headerUnderline} />
       </View>
 
@@ -98,7 +101,9 @@ export default function CompletedRoutesScreen() {
           style={styles.loader}
         />
       ) : routes.length === 0 ? (
-        <Text style={styles.empty}>No hay rutas completadas.</Text>
+        <CustomText style={styles.empty}>
+          No hay rutas completadas.
+        </CustomText>
       ) : (
         <FlatList
           data={routes}
@@ -120,12 +125,10 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     alignItems: 'center',
-    marginBottom: 20, // igual que en RouteDetailScreen
+    marginBottom: 20,
   },
   headerText: {
-    ...typography.h1,
-    color: colors.textPrimary,
-    fontWeight: '700',
+    ...typography.h1,        // Montserrat-Bold, tamaño 28
     textAlign: 'center',
   },
   headerUnderline: {
@@ -150,15 +153,14 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   address: {
-    ...typography.body,
-    fontWeight: 'bold',
+    ...typography.h2,        // Montserrat-Bold, tamaño 20
     marginBottom: 6,
     color: colors.textPrimary,
   },
   detail: {
-    ...typography.body,
+    ...typography.body,      // Montserrat-Regular, tamaño 16
     marginBottom: 2,
-    color: colors.black,
+    color: colors.textPrimary,
   },
   divider: {
     height: 1,
@@ -166,14 +168,14 @@ const styles = StyleSheet.create({
     marginVertical: 8,
   },
   status: {
-    ...typography.body,
+    ...typography.body,      // Montserrat-Regular
+    fontWeight: '700',       // negrita
     marginTop: 8,
-    fontWeight: 'bold',
   },
   empty: {
-    ...typography.body,
+    ...typography.body,      // Montserrat-Regular
     marginTop: 24,
     textAlign: 'center',
-    color: colors.textSecondary,
+    color: colors.gray500,   // gris más suave
   },
 });

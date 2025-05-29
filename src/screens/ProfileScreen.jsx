@@ -5,12 +5,13 @@ import {
   Pressable,
   SafeAreaView,
   StyleSheet,
-  Text,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
+import CustomText from '../components/CustomText'; // ← importamos CustomText
 import { AuthContext } from '../context/authContext';
 import { getProfile } from '../services/userService';
 import { baseStyles, colors, typography } from '../styles/globalStyles';
@@ -21,7 +22,7 @@ export default function ProfileScreen({ navigation }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchProfile = async () => {
+    (async () => {
       setLoading(true);
       const { success, data, error } = await getProfile();
       if (!success) {
@@ -31,8 +32,7 @@ export default function ProfileScreen({ navigation }) {
         setProfile(data);
       }
       setLoading(false);
-    };
-    fetchProfile();
+    })();
   }, []);
 
   const handleLogout = async () => {
@@ -56,36 +56,42 @@ export default function ProfileScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* Flecha de regreso */}
       <Pressable
+        onPress={handleBack}
         style={({ pressed }) => [
           baseStyles.backButton,
           pressed && baseStyles.backButtonPressed,
         ]}
-        onPress={handleBack}
       >
         <Icon name="arrow-left" size={24} color={colors.textPrimary} />
       </Pressable>
 
+      {/* Header */}
       <View style={styles.headerContainer}>
-        <Text style={styles.headerText}>Perfil de Usuario</Text>
+        <CustomText style={styles.headerText}>Perfil de Usuario</CustomText>
         <View style={styles.headerUnderline} />
       </View>
 
+      {/* Card con datos */}
       <View style={styles.card}>
-        <Text style={styles.attributeText}>Nombre:</Text>
-        <Text style={styles.valueText}>{profile.name || 'Sin nombre'}</Text>
+        <CustomText style={styles.attributeText}>Nombre:</CustomText>
+        <CustomText style={styles.valueText}>
+          {profile.name || 'Sin nombre'}
+        </CustomText>
 
-        <Text style={styles.attributeText}>Email:</Text>
-        <Text style={styles.valueText}>{profile.email || 'Sin email'}</Text>
+        <CustomText style={styles.attributeText}>Email:</CustomText>
+        <CustomText style={styles.valueText}>
+          {profile.email || 'Sin email'}
+        </CustomText>
 
-        <Text style={styles.attributeText}>Teléfono:</Text>
-        <Text style={styles.valueText}>{profile.phoneNumber || 'Sin teléfono'}</Text>
+        <CustomText style={styles.attributeText}>Teléfono:</CustomText>
+        <CustomText style={styles.valueText}>
+          {profile.phoneNumber || 'Sin teléfono'}
+        </CustomText>
 
-        <TouchableOpacity
-          style={baseStyles.button}
-          onPress={handleLogout}
-        >
-          <Text style={baseStyles.buttonText}>Cerrar sesión</Text>
+        <TouchableOpacity style={baseStyles.button} onPress={handleLogout}>
+          <CustomText style={baseStyles.buttonText}>Cerrar sesión</CustomText>
         </TouchableOpacity>
       </View>
 
@@ -109,9 +115,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerText: {
-    ...typography.h1,
+    ...typography.h1,           // Montserrat-Bold, tamaño 28
+    textAlign: 'center',
     color: colors.textPrimary,
-    fontWeight: '700',
   },
   headerUnderline: {
     marginTop: 6,
@@ -132,15 +138,13 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   attributeText: {
-    ...typography.body,
+    ...typography.h2,           // Montserrat-Bold, tamaño 20
     color: colors.primary,
-    fontWeight: 'bold',
     marginBottom: 5,
   },
   valueText: {
-    ...typography.body,
-    color: colors.black,
+    ...typography.body,         // Montserrat-Regular, tamaño 16
+    color: colors.textPrimary,
     marginBottom: 15,
   },
 });
-

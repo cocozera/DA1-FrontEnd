@@ -7,11 +7,12 @@ import {
   Pressable,
   SafeAreaView,
   StyleSheet,
-  Text,
   ToastAndroid,
   View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
+import CustomText from '../components/CustomText'; // ← import CustomText
 import { AuthContext } from '../context/authContext';
 import { getAllRoutes } from '../services/routeService';
 import { baseStyles, colors, typography } from '../styles/globalStyles';
@@ -40,8 +41,7 @@ export default function ViewAllRoutesScreen() {
       } else {
         setRoutes(Array.isArray(data) ? data : []);
       }
-    } catch (err) {
-      console.error('❌ Error inesperado en fetchRoutes:', err);
+    } catch {
       ToastAndroid.show('Error de conexión', ToastAndroid.SHORT);
       setRoutes([]);
     } finally {
@@ -81,20 +81,20 @@ export default function ViewAllRoutesScreen() {
           color={colors.primary}
           style={styles.icon}
         />
-        <Text style={styles.address}>{item.address}</Text>
+        <CustomText style={styles.address}>{item.address}</CustomText>
       </View>
 
-      <Text style={styles.infoText}>
-        <Text style={styles.bold}>Zona: </Text>
-        <Text style={[styles.bold, { color: 'black' }]}>{item.zone}</Text>
-      </Text>
+      <CustomText style={styles.infoText}>
+        <CustomText style={styles.bold}>Zona: </CustomText>
+        <CustomText style={[styles.bold, { color: 'black' }]}>{item.zone}</CustomText>
+      </CustomText>
 
-      <Text style={styles.infoText}>
+      <CustomText style={styles.infoText}>
         Estado:{' '}
-        <Text style={[styles.badge, getStatusStyle(item.status)]}>
+        <CustomText style={[styles.badge, getStatusStyle(item.status)]}>
           {item.status}
-        </Text>
-      </Text>
+        </CustomText>
+      </CustomText>
     </Pressable>
   );
 
@@ -113,7 +113,7 @@ export default function ViewAllRoutesScreen() {
 
       {/* Título centrado + línea */}
       <View style={styles.headerContainer}>
-        <Text style={styles.headerText}>Rutas Disponibles</Text>
+        <CustomText style={styles.headerText}>Rutas Disponibles</CustomText>
         <View style={styles.headerUnderline} />
       </View>
 
@@ -122,7 +122,7 @@ export default function ViewAllRoutesScreen() {
           <ActivityIndicator size="large" color={colors.primary} />
         </View>
       ) : routes.length === 0 ? (
-        <Text style={styles.empty}>No hay rutas para mostrar.</Text>
+        <CustomText style={styles.empty}>No hay rutas para mostrar.</CustomText>
       ) : (
         <FlatList
           data={routes}
@@ -145,12 +145,12 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     alignItems: 'center',
-    marginBottom: 20,           // mismo margen que en RouteDetail
+    marginBottom: 20,           // igual que en RouteDetail
   },
   headerText: {
-    ...typography.h1,
+    ...typography.h1,           // Montserrat-Bold, size 28
+    textAlign: 'center',
     color: colors.textPrimary,
-    fontWeight: '700',
   },
   headerUnderline: {
     marginTop: 6,
@@ -191,12 +191,11 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   address: {
-    fontSize: 16,
-    fontWeight: 'bold',
+    ...typography.h2,           // Montserrat-Bold, size 20
     color: colors.primary,
   },
   infoText: {
-    ...typography.body,
+    ...typography.body,         // Montserrat-Regular, size 16
     marginTop: 2,
   },
   badge: {
@@ -205,7 +204,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     overflow: 'hidden',
     fontSize: 14,
-    fontWeight: 'bold',
+    fontWeight: '700',
   },
   center: {
     flex: 1,
@@ -213,10 +212,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   empty: {
-    ...typography.body,
+    ...typography.body,         // Montserrat-Regular
     marginTop: 24,
     textAlign: 'center',
-    color: colors.textSecondary,
+    color: colors.gray500,
   },
   bold: {
     fontWeight: '700',

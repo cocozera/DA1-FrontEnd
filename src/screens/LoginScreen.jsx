@@ -1,17 +1,19 @@
+// src/screens/LoginScreen.js
 import { useContext, useState } from 'react';
 import {
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
+  Pressable,
   SafeAreaView,
   StyleSheet,
-  Text,
-  TouchableOpacity,
   View,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
 import CustomButton from '../components/CustomButton';
+import CustomText from '../components/CustomText'; // ← import CustomText
 import CustomTextInput from '../components/CustomTextInput';
 import { AuthContext } from '../context/authContext';
 import { colors, typography } from '../styles/globalStyles';
@@ -31,7 +33,6 @@ export default function LoginScreen({ navigation }) {
       await login({ email, password });
       navigation.replace('Home');
     } catch (err) {
-      // Diferenciar error de red del resto
       const msg = err.message.includes('Servidor no disponible')
         ? 'No se pudo conectar con el servidor. Inténtalo más tarde.'
         : err.message;
@@ -45,13 +46,15 @@ export default function LoginScreen({ navigation }) {
         style={styles.wrapper}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
+        {/* HEADER */}
         <View style={styles.header}>
           <Icon name="truck-fast" size={40} color={colors.primary} />
-          <Text style={styles.headerText}>DeRemate.com</Text>
+          <CustomText style={styles.headerText}>DeRemate.com</CustomText>
         </View>
 
+        {/* CARD */}
         <View style={styles.card}>
-          <Text style={styles.title}>Iniciar sesión</Text>
+          <CustomText style={styles.title}>Iniciar sesión</CustomText>
 
           <CustomTextInput
             placeholder="Email"
@@ -68,7 +71,7 @@ export default function LoginScreen({ navigation }) {
             onChangeText={setPassword}
             secureTextEntry={!showPassword}
             iconRight={showPassword ? 'eye-off' : 'eye'}
-            onPressIconRight={() => setShowPassword((v) => !v)}
+            onPressIconRight={() => setShowPassword(v => !v)}
             editable={!loading}
           />
 
@@ -88,21 +91,23 @@ export default function LoginScreen({ navigation }) {
           )}
 
           <View style={styles.links}>
-            <TouchableOpacity
+            <Pressable
               onPress={() => navigation.navigate('RecoverPassword')}
               disabled={loading}
             >
-              <Text style={styles.linkText}>¿Olvidaste tu contraseña?</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
+              <CustomText style={styles.linkText}>
+                ¿Olvidaste tu contraseña?
+              </CustomText>
+            </Pressable>
+            <Pressable
               onPress={() => navigation.navigate('Register')}
               style={{ marginTop: 8 }}
               disabled={loading}
             >
-              <Text style={styles.linkText}>
+              <CustomText style={styles.linkText}>
                 ¿No tenés cuenta? Registrate ahora
-              </Text>
-            </TouchableOpacity>
+              </CustomText>
+            </Pressable>
           </View>
         </View>
       </KeyboardAvoidingView>
@@ -129,8 +134,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   headerText: {
-    fontSize: 22,
-    fontWeight: 'bold',
+    ...typography.h2,             // Montserrat-Bold tamaño 20
     color: colors.textPrimary,
   },
   card: {
@@ -144,7 +148,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   title: {
-    ...typography.h1,
+    ...typography.h1,             // Montserrat-Bold tamaño 28
     textAlign: 'center',
     marginBottom: 24,
     color: colors.textPrimary,
@@ -154,7 +158,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   linkText: {
-    ...typography.link,
+    ...typography.link,           // Montserrat-Regular tamaño 16
     color: colors.primary,
   },
 });

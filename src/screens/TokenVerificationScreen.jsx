@@ -1,3 +1,4 @@
+// src/screens/TokenVerificationScreen.js
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useState } from 'react';
 import {
@@ -8,11 +9,12 @@ import {
   SafeAreaView,
   StatusBar,
   StyleSheet,
-  Text,
-  TextInput,
-  View
+  View,
 } from 'react-native';
+
 import CustomButton from '../components/CustomButton';
+import CustomText from '../components/CustomText'; // ← import CustomText
+import CustomTextInput from '../components/CustomTextInput'; // ← import CustomTextInput
 import { verifyToken } from '../services/authService';
 import { colors, typography } from '../styles/globalStyles';
 
@@ -26,7 +28,10 @@ export default function TokenVerificationScreen() {
 
   const handleVerify = async () => {
     try {
-      const response = await verifyToken({ email: email.trim(), token: code.trim() });
+      const response = await verifyToken({
+        email: email.trim(),
+        token: code.trim(),
+      });
       if (response.success) {
         Alert.alert('✅ Cuenta verificada', 'Ahora podés iniciar sesión');
         navigation.navigate('Login');
@@ -50,41 +55,37 @@ export default function TokenVerificationScreen() {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
         <View style={styles.card}>
-          <Text style={styles.title}>Verificar Cuenta</Text>
+          <CustomText style={styles.title}>
+            Verificar Cuenta
+          </CustomText>
 
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder="Correo electrónico"
-              value={email}
-              onChangeText={setEmail}
-              keyboardType="email-address"
-              autoCapitalize="none"
-            />
-          </View>
+          <CustomTextInput
+            placeholder="Correo electrónico"
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+            autoCapitalize="none"
+          />
 
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder="Código de verificación"
-              value={code}
-              onChangeText={setCode}
-              keyboardType="number-pad"
-            />
-          </View>
+          <CustomTextInput
+            placeholder="Código de verificación"
+            value={code}
+            onChangeText={setCode}
+            keyboardType="number-pad"
+          />
 
           <CustomButton title="Verificar" onPress={handleVerify} />
 
-          <Text style={styles.infoText}>
+          <CustomText style={styles.infoText}>
             Nota: Se te envió un código a tu correo. Revisá tu bandeja de entrada o spam.
-          </Text>
+          </CustomText>
         </View>
 
         <Pressable onPress={() => navigation.navigate('Login')}>
           {({ pressed }) => (
-            <Text style={[styles.linkText, pressed && styles.pressedText]}>
+            <CustomText style={[styles.linkText, pressed && styles.pressedText]}>
               ¿Ya tienes cuenta? Inicia sesión
-            </Text>
+            </CustomText>
           )}
         </Pressable>
       </KeyboardAvoidingView>
@@ -113,35 +114,25 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   title: {
-    ...typography.h1,
+    ...typography.h1,        // Montserrat-Bold, size 28
     textAlign: 'center',
     marginBottom: 24,
-  },
-  inputContainer: {
-    backgroundColor: '#F5F5F5',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: Platform.OS === 'ios' ? 14 : 10,
-    marginBottom: 16,
-  },
-  input: {
-    fontSize: 16,
-    color: '#333',
+    color: colors.textPrimary,
   },
   infoText: {
-    ...typography.body,
+    ...typography.body,      // Montserrat-Regular, size 16
     color: '#4E342E',
     textAlign: 'center',
     marginTop: 16,
   },
+  linkText: {
+    ...typography.link,      // Montserrat-Regular, size 16
+    textAlign: 'center',
+    marginTop: 24,
+    color: colors.primary,
+  },
   pressedText: {
     opacity: 0.7,
     transform: [{ scale: 0.97 }],
-  },
-
-  linkText: {
-    ...typography.link,
-    textAlign: 'center',
-    marginTop: 24,
   },
 });

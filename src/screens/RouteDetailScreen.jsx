@@ -6,11 +6,12 @@ import {
   Pressable,
   SafeAreaView,
   StyleSheet,
-  Text,
   View,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
+import CustomText from '../components/CustomText'; // ← import CustomText
 import { getRouteDetails } from '../services/routeService';
 import { baseStyles, colors, typography } from '../styles/globalStyles';
 
@@ -33,7 +34,7 @@ export default function RouteDetailScreen() {
           return;
         }
         setDetail(data);
-      } catch (e) {
+      } catch {
         Toast.show({ type: 'error', text1: 'Error de conexión' });
         navigation.goBack();
       } finally {
@@ -55,42 +56,56 @@ export default function RouteDetailScreen() {
       </SafeAreaView>
     );
   }
-
   if (!detail) return null;
+
+  const getStatusColor = status => {
+    switch ((status || '').toLowerCase()) {
+      case 'pendiente': return '#FFC107';
+      case 'completado': return '#28A745';
+      case 'cancelado': return '#DC3545';
+      default: return colors.textPrimary;
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
       <Pressable
+        onPress={handleGoBack}
         style={({ pressed }) => [
           baseStyles.backButton,
           pressed && baseStyles.backButtonPressed,
         ]}
-        onPress={handleGoBack}
       >
         <Icon name="arrow-left" size={24} color={colors.textPrimary} />
       </Pressable>
 
       <View style={styles.headerContainer}>
-        <Text style={styles.headerText}>Detalle de la Ruta</Text>
+        <CustomText style={styles.headerText}>
+          Detalle de la Ruta
+        </CustomText>
         <View style={styles.headerUnderline} />
       </View>
 
       <View style={styles.detailContainer}>
-        <Text style={styles.label}>ID de Ruta:</Text>
-        <Text style={styles.value}>{detail.id}</Text>
+        <CustomText style={styles.label}>ID de Ruta:</CustomText>
+        <CustomText style={styles.value}>{detail.id}</CustomText>
 
-        <Text style={styles.label}>Zona:</Text>
-        <Text style={styles.value}>{detail.zone}</Text>
+        <CustomText style={styles.label}>Zona:</CustomText>
+        <CustomText style={styles.value}>{detail.zone}</CustomText>
 
-        <Text style={styles.label}>Estado:</Text>
-        <Text style={[styles.value, { color: getStatusColor(detail.status) }]}>
+        <CustomText style={styles.label}>Estado:</CustomText>
+        <CustomText
+          style={[styles.value, { color: getStatusColor(detail.status) }]}
+        >
           {detail.status}
-        </Text>
+        </CustomText>
 
         {detail.packageDTO && (
           <>
-            <Text style={styles.label}>Sector en Depósito:</Text>
-            <Text style={styles.value}>{detail.packageDTO.depositSector}</Text>
+            <CustomText style={styles.label}>Sector en Depósito:</CustomText>
+            <CustomText style={styles.value}>
+              {detail.packageDTO.depositSector}
+            </CustomText>
           </>
         )}
       </View>
@@ -110,21 +125,31 @@ export default function RouteDetailScreen() {
   );
 }
 
-const getStatusColor = status => {
-  switch ((status || '').toLowerCase()) {
-    case 'pendiente': return '#FFC107';
-    case 'completado': return '#28A745';
-    case 'cancelado': return '#DC3545';
-    default: return colors.textPrimary;
-  }
-};
-
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.backgroundBeige, padding: 16 },
-  loader: { flex: 1, justifyContent: 'center' },
-  headerContainer: { alignItems: 'center', marginBottom: 20 },
-  headerText: { ...typography.h1, color: colors.textPrimary, fontWeight: '700' },
-  headerUnderline: { marginTop: 6, width: 100, height: 3, backgroundColor: colors.primary, borderRadius: 2 },
+  container: {
+    flex: 1,
+    backgroundColor: colors.backgroundBeige,
+    padding: 16,
+  },
+  loader: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  headerContainer: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  headerText: {
+    ...typography.h1,           // Montserrat-Bold, size 28
+    textAlign: 'center',
+  },
+  headerUnderline: {
+    marginTop: 6,
+    width: 100,
+    height: 3,
+    backgroundColor: colors.primary,
+    borderRadius: 2,
+  },
   detailContainer: {
     backgroundColor: colors.white,
     borderRadius: 12,
@@ -135,12 +160,31 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
     elevation: 5,
   },
-  label: { color: colors.primary, fontWeight: '700', fontSize: 16, marginTop: 10 },
-  value: { fontSize: 16, color: 'black', marginBottom: 8 },
-  floatingButton: {
-    position: 'absolute', bottom: 30, right: 30,
-    backgroundColor: colors.primary, width: 60, height: 60,
-    borderRadius: 30, alignItems: 'center', justifyContent: 'center', elevation: 10, zIndex: 10,
+  label: {
+    ...typography.h2,           // Montserrat-Bold, size 20
+    fontSize: 16,               // override to 16
+    marginTop: 10,
+    color: colors.primary,
   },
-  floatingButtonPressed: { opacity: 0.7 },
+  value: {
+    ...typography.body,         // Montserrat-Regular, size 16
+    marginBottom: 8,
+    color: colors.textPrimary,
+  },
+  floatingButton: {
+    position: 'absolute',
+    bottom: 30,
+    right: 30,
+    backgroundColor: colors.primary,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 10,
+    zIndex: 10,
+  },
+  floatingButtonPressed: {
+    opacity: 0.7,
+  },
 });

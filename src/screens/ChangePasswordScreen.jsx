@@ -1,3 +1,4 @@
+// src/screens/ChangePasswordScreen.js
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useState } from 'react';
 import {
@@ -5,18 +6,17 @@ import {
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
-  Text,
   View,
 } from 'react-native';
 import CustomButton from '../components/CustomButton';
+import CustomText from '../components/CustomText'; // ← importamos CustomText
 import CustomTextInput from '../components/CustomTextInput';
 import { changePassword } from '../services/authService';
 import { colors, typography } from '../styles/globalStyles';
 
-const ChangePasswordScreen = () => {
+export default function ChangePasswordScreen() {
   const route = useRoute();
   const navigation = useNavigation();
-
   const { email } = route.params;
 
   const [code, setCode] = useState('');
@@ -29,7 +29,6 @@ const ChangePasswordScreen = () => {
       Alert.alert('Error', 'Todos los campos son obligatorios');
       return;
     }
-
     if (newPassword !== confirmPassword) {
       Alert.alert('Error', 'Las contraseñas no coinciden');
       return;
@@ -53,7 +52,8 @@ const ChangePasswordScreen = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <View style={styles.form}>
-        <Text style={styles.title}>Cambiar Contraseña</Text>
+        {/* Título usando CustomText + typography.h1 */}
+        <CustomText style={styles.title}>Cambiar Contraseña</CustomText>
 
         <CustomTextInput
           placeholder="Código de verificación"
@@ -83,7 +83,7 @@ const ChangePasswordScreen = () => {
       </View>
     </KeyboardAvoidingView>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -103,10 +103,8 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   title: {
-    ...typography.h1,
+    ...typography.h1,     // Montserrat-Bold, size 28
     textAlign: 'center',
     marginBottom: 24,
   },
 });
-
-export default ChangePasswordScreen;

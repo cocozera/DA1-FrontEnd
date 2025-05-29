@@ -1,8 +1,9 @@
-import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
+// src/components/CustomTextInput.js
+import { Pressable, StyleSheet, TextInput, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { colors } from '../styles/globalStyles';
+import { baseStyles, colors, typography } from '../styles/globalStyles';
 
-const CustomTextInput = ({
+export default function CustomTextInput({
   placeholder,
   secureTextEntry = false,
   value,
@@ -10,11 +11,11 @@ const CustomTextInput = ({
   keyboardType = 'default',
   iconRight,
   onPressIconRight,
-}) => {
+}) {
   return (
-    <View style={styles.inputWrapper}>
+    <View style={styles.wrapper}>
       <TextInput
-        style={styles.input}
+        style={[baseStyles.input, typography.body, styles.input]}
         placeholder={placeholder}
         placeholderTextColor={colors.gray500}
         secureTextEntry={secureTextEntry}
@@ -23,35 +24,40 @@ const CustomTextInput = ({
         keyboardType={keyboardType}
         autoCapitalize="none"
       />
+
       {iconRight && (
-        <TouchableOpacity onPress={onPressIconRight} style={styles.iconWrapper}>
-          <Icon name={iconRight} size={22} color={colors.gray700} />
-        </TouchableOpacity>
+        <Pressable
+          onPress={onPressIconRight}
+          style={({ pressed }) => [
+            styles.iconContainer,
+            pressed && styles.iconPressed,
+          ]}
+        >
+          <Icon name={iconRight} size={22} color={colors.gray500} />
+        </Pressable>
       )}
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  inputWrapper: {
+  wrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: colors.gray300,
-    borderRadius: 8,
-    backgroundColor: colors.white,
-    paddingHorizontal: 12,
     marginBottom: 16,
   },
   input: {
     flex: 1,
     paddingVertical: 12,
-    fontSize: 16,
     color: colors.textPrimary,
+    backgroundColor: colors.white,
   },
-  iconWrapper: {
+  iconContainer: {
     paddingLeft: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  iconPressed: {
+    opacity: 0.6,
   },
 });
-
-export default CustomTextInput;

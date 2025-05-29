@@ -1,5 +1,4 @@
 // src/screens/HomeScreen.js
-
 import { useNavigation } from '@react-navigation/native';
 import { useContext, useEffect, useState } from 'react';
 import {
@@ -9,11 +8,12 @@ import {
   SafeAreaView,
   ScrollView,
   StyleSheet,
-  Text,
   View,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
+import CustomText from '../components/CustomText';
 import { AuthContext } from '../context/authContext';
 import { getInProgressRoutes } from '../services/routeService';
 import { getProfile } from '../services/userService';
@@ -49,7 +49,6 @@ export default function HomeScreen() {
         Toast.show({ type: 'error', text1: error });
         return;
       }
-      // Si data.name viene vacío o null, mostramos un mensaje informativo
       if (!data.name?.trim()) {
         Toast.show({
           type: 'info',
@@ -58,7 +57,7 @@ export default function HomeScreen() {
         });
       }
       setUserName(data.name || '');
-    } catch (err) {
+    } catch {
       Toast.show({
         type: 'error',
         text1: 'Error inesperado',
@@ -74,12 +73,8 @@ export default function HomeScreen() {
         Toast.show({ type: 'error', text1: error });
         return;
       }
-      if (Array.isArray(routes) && routes.length > 0) {
-        setInProgressRoute(routes[0]);
-      } else {
-        setInProgressRoute(null);
-      }
-    } catch (err) {
+      setInProgressRoute(Array.isArray(routes) && routes.length ? routes[0] : null);
+    } catch {
       Toast.show({
         type: 'error',
         text1: 'Error inesperado',
@@ -102,27 +97,32 @@ export default function HomeScreen() {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
+        {/* TOP BAR */}
         <View style={styles.topBar}>
           <View style={styles.logoContainer}>
             <Icon name="truck-fast" size={24} color={colors.textPrimary} />
-            <Text style={styles.brand}>DeRemate.com</Text>
+            <CustomText style={styles.brand}>DeRemate.com</CustomText>
           </View>
           <Pressable onPress={() => navigation.navigate('Profile')}>
             <Icon name="account-circle" size={48} color={colors.textPrimary} />
           </Pressable>
         </View>
 
-        <Text style={styles.title}>
+        {/* TITULO */}
+        <CustomText style={styles.title}>
           ¡Bienvenido{userName ? `, ${userName}` : ''}!
-        </Text>
+        </CustomText>
 
+        {/* TARJETAS */}
         <Pressable
           style={styles.card}
           onPress={() => navigation.navigate('ViewAllRoutes')}
         >
           <View style={styles.cardContent}>
             <Icon name="map-marker-path" size={40} color={colors.primary} />
-            <Text style={styles.cardText}>Rutas Disponibles</Text>
+            <CustomText style={styles.cardText}>
+              Rutas Disponibles
+            </CustomText>
           </View>
         </Pressable>
 
@@ -132,11 +132,14 @@ export default function HomeScreen() {
         >
           <View style={styles.cardContent}>
             <Icon name="history" size={40} color={colors.primary} />
-            <Text style={styles.cardText}>Historial de Rutas</Text>
+            <CustomText style={styles.cardText}>
+              Historial de Rutas
+            </CustomText>
           </View>
         </Pressable>
       </ScrollView>
 
+      {/* BOTÓN FLOTANTE */}
       {inProgressRoute && (
         <Pressable
           style={styles.floatingButton}
@@ -178,15 +181,13 @@ const styles = StyleSheet.create({
   },
   brand: {
     marginLeft: 6,
-    fontSize: 16,
-    fontFamily: 'Montserrat-Bold',
-    color: colors.textPrimary,
+    ...typography.h2,           // Montserrat-Bold tamaño 20
   },
   title: {
     width: '100%',
     marginTop: 32,
     alignSelf: 'flex-start',
-    ...typography.h1,
+    ...typography.h1,           // Montserrat-Bold tamaño 28
   },
   card: {
     width: width - 32,
@@ -209,9 +210,7 @@ const styles = StyleSheet.create({
   },
   cardText: {
     marginLeft: 16,
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: colors.textPrimary,
+    ...typography.h2,           // Montserrat-Bold tamaño 20
   },
   floatingButton: {
     position: 'absolute',

@@ -5,10 +5,11 @@ import {
   SafeAreaView,
   ScrollView,
   StyleSheet,
-  Text,
   View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
+import CustomText from '../components/CustomText'; // ← import CustomText
 import { baseStyles, colors, typography } from '../styles/globalStyles';
 
 export default function InProgressRoute() {
@@ -30,14 +31,16 @@ export default function InProgressRoute() {
   if (!routeData) {
     return (
       <SafeAreaView style={styles.container}>
-        <Text style={typography.body}>No hay datos de la ruta en progreso.</Text>
+        <CustomText style={typography.body}>
+          No hay datos de la ruta en progreso.
+        </CustomText>
       </SafeAreaView>
     );
   }
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Flecha de regreso (igual que en los demás screens) */}
+      {/* Flecha de regreso */}
       <Pressable
         onPress={handleGoBack}
         style={({ pressed }) => [
@@ -48,9 +51,9 @@ export default function InProgressRoute() {
         <Icon name="arrow-left" size={24} color={colors.textPrimary} />
       </Pressable>
 
-      {/* Header consistente: título + línea un poco más abajo */}
+      {/* Header */}
       <View style={styles.headerContainer}>
-        <Text style={styles.headerText}>Ruta en Progreso</Text>
+        <CustomText style={styles.headerText}>Ruta en Progreso</CustomText>
         <View style={styles.headerUnderline} />
       </View>
 
@@ -73,9 +76,9 @@ function Card({ icon, label, value }) {
     <View style={styles.card}>
       <View style={styles.cardHeader}>
         <Icon name={icon} size={20} color={colors.primary} style={styles.icon} />
-        <Text style={styles.label}>{label}:</Text>
+        <CustomText style={styles.label}>{label}:</CustomText>
       </View>
-      <Text style={styles.value}>{value || '-'}</Text>
+      <CustomText style={styles.value}>{value || '-'}</CustomText>
     </View>
   );
 }
@@ -88,12 +91,10 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     alignItems: 'center',
-    marginBottom: 20,          // mismo gap que en RouteDetailScreen
+    marginBottom: 20,
   },
   headerText: {
-    ...typography.h1,
-    color: colors.textPrimary,
-    fontWeight: '700',
+    ...typography.h1,            // Montserrat-Bold, 28
     textAlign: 'center',
   },
   headerUnderline: {
@@ -126,14 +127,12 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   label: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: colors.primary,     // label en rojo como en RouteDetail
+    ...typography.h2,            // Montserrat-Bold, 20
+    color: colors.primary,
   },
   value: {
-    fontSize: 16,
-    fontWeight: '700',         // valor en negrita
-    color: 'black',            // valor en negro
+    ...typography.body,           // Montserrat-Regular, 16
+    color: colors.textPrimary,
     marginLeft: 28,
     marginTop: 2,
   },
