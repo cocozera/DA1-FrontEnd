@@ -1,3 +1,4 @@
+// src/screens/CompletedRoutesScreen.js
 import { useNavigation } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
 import {
@@ -7,15 +8,12 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
+  ToastAndroid,
   View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { getRouteHistory } from '../services/routeService';
-import {
-  baseStyles,
-  colors,
-  typography,
-} from '../styles/globalStyles';
+import { baseStyles, colors, typography } from '../styles/globalStyles';
 
 export default function CompletedRoutesScreen() {
   const navigation = useNavigation();
@@ -27,24 +25,29 @@ export default function CompletedRoutesScreen() {
   }, []);
 
   const fetchRoutes = async () => {
+    setLoading(true);
     try {
-      const data = await getRouteHistory();
-      setRoutes(data || []);
+      const { success, data, error } = await getRouteHistory();
+      if (!success) {
+        ToastAndroid.show(error, ToastAndroid.SHORT);
+        setRoutes([]);
+      } else {
+        setRoutes(Array.isArray(data) ? data : []);
+      }
     } catch (err) {
-      console.warn('Error fetching route history:', err);
+      console.error('❌ Error inesperado en fetchRoutes:', err);
+      ToastAndroid.show('Error de conexión', ToastAndroid.SHORT);
+      setRoutes([]);
     } finally {
       setLoading(false);
     }
   };
 
-  const getStatusColor = (status) => {
+  const getStatusColor = status => {
     switch ((status || '').toUpperCase()) {
-      case 'COMPLETED':
-        return '#2ECC71';
-      case 'PENDING':
-        return '#E67E22';
-      default:
-        return colors.textPrimary;
+      case 'COMPLETED': return '#2ECC71';
+      case 'PENDING':   return '#E67E22';
+      default:          return colors.textPrimary;
     }
   };
 
@@ -71,7 +74,7 @@ export default function CompletedRoutesScreen() {
         style={({ pressed }) => [
           baseStyles.backButton,
           styles.backButtonContainer,
-          pressed && baseStyles.backButtonPressed, // si tienes un estilo para el efecto de presión
+          pressed && baseStyles.backButtonPressed,
         ]}
       >
         <Icon name="arrow-left" size={24} color={colors.textPrimary} />
@@ -83,13 +86,13 @@ export default function CompletedRoutesScreen() {
       </View>
 
       {loading ? (
-        <ActivityIndicator size="large" color={colors.primary} />
+        <ActivityIndicator size="large" color={colors.primary} style={styles.loader}/>
       ) : routes.length === 0 ? (
         <Text style={styles.empty}>No hay rutas completadas.</Text>
       ) : (
         <FlatList
           data={routes}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={item => String(item.id)}
           renderItem={renderRoute}
           contentContainerStyle={styles.list}
         />
@@ -117,6 +120,11 @@ const styles = StyleSheet.create({
     ...typography.h1,
     fontSize: 20,
     marginLeft: 8,
+    color: colors.textPrimary,
+  },
+  loader: {
+    flex: 1,
+    justifyContent: 'center',
   },
   list: {
     paddingBottom: 16,
@@ -132,24 +140,27 @@ const styles = StyleSheet.create({
     ...typography.body,
     fontWeight: 'bold',
     marginBottom: 6,
+    color: colors.textPrimary,
   },
   detail: {
     ...typography.body,
     marginBottom: 2,
+    color: colors.black,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: colors.gray300,
+    marginVertical: 8,
   },
   status: {
     ...typography.body,
     marginTop: 8,
     fontWeight: 'bold',
   },
-  divider: {
-    height: 1,
-    backgroundColor: colors.gray300,
-    marginTop: 8,
-  },
   empty: {
     ...typography.body,
     marginTop: 24,
     textAlign: 'center',
+    color: colors.textSecondary,
   },
 });

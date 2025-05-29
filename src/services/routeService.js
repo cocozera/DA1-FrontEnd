@@ -10,7 +10,7 @@ const parseError = (error, defaultMsg) => {
 
 export const getAllRoutes = async () => {
   try {
-    const { data } = await api.get('/routes');
+    const { data } = await api.get('/routes/');
     return { success: true, data };
   } catch (error) {
     const msg = parseError(error, 'Error al obtener todas las rutas');
