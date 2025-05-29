@@ -23,24 +23,34 @@ export default function RegisterScreen({ navigation }) {
   const [phone, setPhone]       = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
-  const toggleShowPassword = () => {
-    setShowPassword(!showPassword);
-  };
+  const toggleShowPassword = () => setShowPassword(prev => !prev);
 
   const handleRegister = async () => {
-    try {
-      await register({
-        name,
-        email,
-        password,
-        phoneNumber: phone
-      });
+    // 1) Validación de campos
+    if (!name.trim()) {
+      return Alert.alert('Error', 'Por favor ingresa tu nombre');
+    }
+    if (!email.trim()) {
+      return Alert.alert('Error', 'Por favor ingresa tu email');
+    }
+    if (!password) {
+      return Alert.alert('Error', 'Por favor ingresa tu contraseña');
+    }
+    if (!phone.trim()) {
+      return Alert.alert('Error', 'Por favor ingresa tu teléfono');
+    }
 
-      // Tras registro exitoso, navegar a la pantalla de verificación
+    try {
+      await register({ name, email, password, phoneNumber: phone });
+      // Si sale bien, vamos a verificación de token
       navigation.navigate('TokenVerification', { email });
     } catch (err) {
-      console.error(err);
-      Alert.alert('Error', err.message || 'Fallo de registro');
+      // 2) Manejo de todo tipo de errores
+      let msg = err.message || 'Fallo de registro';
+      if (msg.toLowerCase().includes('servidor no disponible')) {
+        msg = 'No se pudo conectar con el servidor. Inténtalo más tarde.';
+      }
+      Alert.alert('Error', msg);
     }
   };
 
@@ -61,6 +71,7 @@ export default function RegisterScreen({ navigation }) {
             placeholder="Nombre"
             value={name}
             onChangeText={setName}
+            editable={!loading}
           />
 
           <CustomTextInput
@@ -68,6 +79,8 @@ export default function RegisterScreen({ navigation }) {
             keyboardType="email-address"
             value={email}
             onChangeText={setEmail}
+            autoCapitalize="none"
+            editable={!loading}
           />
 
           <CustomTextInput
@@ -77,6 +90,7 @@ export default function RegisterScreen({ navigation }) {
             onChangeText={setPassword}
             iconRight={showPassword ? 'eye-off' : 'eye'}
             onPressIconRight={toggleShowPassword}
+            editable={!loading}
           />
 
           <CustomTextInput
@@ -84,18 +98,28 @@ export default function RegisterScreen({ navigation }) {
             keyboardType="phone-pad"
             value={phone}
             onChangeText={setPhone}
+            editable={!loading}
           />
 
           <CustomButton
-            title="REGISTRARSE"
+            title={loading ? 'Registrando...' : 'REGISTRARSE'}
             onPress={handleRegister}
+            disabled={loading}
             loading={loading}
           />
 
           <View style={styles.bottomLink}>
-            <Pressable onPress={() => navigation.navigate('Login')}>
+            <Pressable
+              onPress={() => navigation.navigate('Login')}
+              disabled={loading}
+            >
               {({ pressed }) => (
-                <Text style={[styles.linkText, pressed && styles.pressedText]}>
+                <Text
+                  style={[
+                    styles.linkText,
+                    pressed && styles.pressedText
+                  ]}
+                >
                   ¿Ya tenés cuenta? Inicia sesión
                 </Text>
               )}

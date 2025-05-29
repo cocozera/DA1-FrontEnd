@@ -1,5 +1,7 @@
-import { useContext } from 'react';
+// src/screens/ProfileScreen.js
+import { useContext, useEffect, useState } from 'react';
 import {
+  ActivityIndicator,
   Pressable,
   SafeAreaView,
   StyleSheet,
@@ -7,51 +9,87 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { AuthContext } from '../context/authContext';
+import { getProfile } from '../services/userService';
 import { baseStyles, colors, typography } from '../styles/globalStyles';
 
 export default function ProfileScreen({ navigation }) {
-  const { user, logout } = useContext(AuthContext);
+  const { logout } = useContext(AuthContext);
+  const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      setLoading(true);
+      const { success, data, error } = await getProfile();
+      if (!success) {
+        Toast.show({ type: 'error', text1: error });
+        navigation.goBack();
+      } else {
+        setProfile(data);
+      }
+      setLoading(false);
+    };
+    fetchProfile();
+  }, []);
+
+  const handleLogout = async () => {
+    await logout();
+    navigation.replace('Login');
+  };
 
   const handleBack = () => navigation.goBack();
-  const handleLogout = () => logout();
+
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <ActivityIndicator
+          size="large"
+          color={colors.primary}
+          style={styles.loader}
+        />
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Botón Back con estilo global */}
       <Pressable
         style={({ pressed }) => [
           baseStyles.backButton,
-          pressed && baseStyles.backButtonPressed, // Estilo de interacción al presionar
+          pressed && baseStyles.backButtonPressed,
         ]}
         onPress={handleBack}
       >
         <Icon name="arrow-left" size={24} color={colors.textPrimary} />
       </Pressable>
 
-      {/* Header */}
       <View style={styles.headerContainer}>
-          
-          <Text style={styles.headerText}>Perfil de Usuario</Text>
+        <Text style={styles.headerText}>Perfil de Usuario</Text>
         <View style={styles.headerUnderline} />
       </View>
 
-      {/* Card de perfil */}
       <View style={styles.card}>
         <Text style={styles.attributeText}>Nombre:</Text>
-        <Text style={styles.valueText}>{user?.name || 'Sin nombre'}</Text>
+        <Text style={styles.valueText}>{profile.name || 'Sin nombre'}</Text>
 
         <Text style={styles.attributeText}>Email:</Text>
-        <Text style={styles.valueText}>{user?.email || 'Sin email'}</Text>
+        <Text style={styles.valueText}>{profile.email || 'Sin email'}</Text>
 
         <Text style={styles.attributeText}>Teléfono:</Text>
-        <Text style={styles.valueText}>{user?.phoneNumber || 'Sin teléfono'}</Text>
+        <Text style={styles.valueText}>{profile.phoneNumber || 'Sin teléfono'}</Text>
 
-        <TouchableOpacity style={baseStyles.button} onPress={handleLogout}>
+        <TouchableOpacity
+          style={baseStyles.button}
+          onPress={handleLogout}
+        >
           <Text style={baseStyles.buttonText}>Cerrar sesión</Text>
         </TouchableOpacity>
       </View>
+
+      <Toast />
     </SafeAreaView>
   );
 }
@@ -62,16 +100,18 @@ const styles = StyleSheet.create({
     backgroundColor: colors.backgroundBeige,
     padding: 16,
   },
-
+  loader: {
+    flex: 1,
+    justifyContent: 'center',
+  },
   headerContainer: {
     marginBottom: 20,
     alignItems: 'center',
-    marginTop: 0,
   },
   headerText: {
     ...typography.h1,
     color: colors.textPrimary,
-    fontWeight: '700', 
+    fontWeight: '700',
   },
   headerUnderline: {
     marginTop: 6,
@@ -88,18 +128,19 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 8,
-    elevation: 5, 
+    elevation: 5,
     marginBottom: 20,
   },
   attributeText: {
     ...typography.body,
-    color: colors.primary, // Rojo para el nombre del atributo
-    fontWeight: 'bold',   
+    color: colors.primary,
+    fontWeight: 'bold',
     marginBottom: 5,
   },
   valueText: {
     ...typography.body,
-    color: colors.black, // Negro para los valores de los atributos
+    color: colors.black,
     marginBottom: 15,
   },
 });
+

@@ -1,18 +1,23 @@
 // src/services/authService.js
 import api from "./api";
 
+const parseError = (error, defaultMsg) => {
+  if (!error.response) {
+    return "Servidor no disponible. Por favor, inténtalo más tarde.";
+  }
+  return error.response.data?.message || defaultMsg;
+};
+
 export const loginApi = async ({ email, password }) => {
   console.log("🔑 loginApi llamado con:", { email, password: "***" });
   try {
     const { data } = await api.post("/auth/login", { email, password });
     console.log("✅ loginApi respuesta:", data);
-    return data;
+    return { success: true, data };
   } catch (error) {
-    console.error("❌ Error en loginApi:", error);
-    const msg =
-      error?.response?.data?.message || "Error al iniciar sesión";
-    console.log("⚠️ loginApi lanza mensaje:", msg);
-    throw new Error(msg);
+    const msg = parseError(error, "Error al iniciar sesión");
+    console.error("❌ loginApi falla:", msg);
+    return { success: false, error: msg };
   }
 };
 
@@ -31,27 +36,11 @@ export const registerApi = async ({ name, email, password, phoneNumber }) => {
       phoneNumber,
     });
     console.log("✅ registerApi respuesta:", data);
-    return data;
+    return { success: true, data };
   } catch (error) {
-    console.error("❌ Error en registerApi:", error);
-    const msg =
-      error?.response?.data?.message || "Error al registrarse";
-    console.log("⚠️ registerApi lanza mensaje:", msg);
-    throw new Error(msg);
-  }
-};
-
-export const changePassword = async ({ email, code, newPassword }) => {
-  try {
-    const res = await api.post('/auth/change-password', {
-      email,
-      code,
-      newPassword
-    });
-    return { success: true, data: res.data };
-  } catch (err) {
-    console.error('ERROR:', err.response?.data || err.message);
-    return { success: false, error: err.response?.data || err.message };
+    const msg = parseError(error, "Error al registrarse");
+    console.error("❌ registerApi falla:", msg);
+    return { success: false, error: msg };
   }
 };
 
@@ -62,24 +51,41 @@ export const recoverPassword = async ({ email }) => {
     console.log("✅ recoverPassword respuesta:", data);
     return { success: true, data };
   } catch (error) {
-    console.error("❌ Error en recoverPassword:", error);
-    const msg =
-      error?.response?.data?.message || "Error al enviar el código de recuperación";
-    console.log("⚠️ recoverPassword lanza mensaje:", msg);
+    const msg = parseError(error, "Error al enviar el código de recuperación");
+    console.error("❌ recoverPassword falla:", msg);
     return { success: false, error: msg };
   }
 };
+
 export const verifyToken = async ({ email, token }) => {
+  console.log("🔍 verifyToken llamado con:", { email, token: "***" });
   try {
-     console.log('Enviando a /auth/verify:', { email, code: token  });
-    const { data } = await api.post('/auth/verify', {
+    const { data } = await api.post("/auth/verify", {
       email,
       code: token,
     });
+    console.log("✅ verifyToken respuesta:", data);
     return { success: true, data };
-  } catch (err) {
-    console.error('❌ Error en verifyToken:', err.response?.data || err.message);
-    return { success: false, error: err.response?.data || err.message };
+  } catch (error) {
+    const msg = parseError(error, "Token inválido o expirado");
+    console.error("❌ verifyToken falla:", msg);
+    return { success: false, error: msg };
   }
 };
 
+export const changePassword = async ({ email, code, newPassword }) => {
+  console.log("🔄 changePassword llamado con:", { email, code: "***" });
+  try {
+    const { data } = await api.post("/auth/change-password", {
+      email,
+      code,
+      newPassword,
+    });
+    console.log("✅ changePassword respuesta:", data);
+    return { success: true, data };
+  } catch (error) {
+    const msg = parseError(error, "Error al cambiar la contraseña");
+    console.error("❌ changePassword falla:", msg);
+    return { success: false, error: msg };
+  }
+};

@@ -1,70 +1,70 @@
 import * as SecureStore from "expo-secure-store";
 import { createContext, useEffect, useState } from "react";
 import { loginApi, registerApi } from "../services/authService";
-import { getProfile } from '../services/userService';
 
 export const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(false);
   const [initializing, setInitializing] = useState(true);
 
-  console.log("👤 AuthProvider render, token:", token);
-
+  // Carga inicial del token
   useEffect(() => {
-    console.log("⏳ AuthProvider cargando token desde SecureStore");
     (async () => {
-      const savedToken = await SecureStore.getItemAsync("token");
-      if (savedToken) {
-        console.log("✅ Token encontrado:", savedToken);
-        setToken(savedToken);
-        try {
-          const profile = await getProfile();
-          setUser(profile);
-        } catch (e) {
-          console.log("⚠️ Error obteniendo perfil con token guardado:", e);
+      console.log("⏳ Cargando token desde SecureStore");
+      try {
+        const savedToken = await SecureStore.getItemAsync("token");
+        if (savedToken) {
+          console.log("✅ Token encontrado:", savedToken);
+          setToken(savedToken);
+        } else {
+          console.log("🚫 No hay token guardado");
         }
-      } else {
-        console.log("🚫 No hay token guardado");
+      } catch (e) {
+        console.error("❌ Error al cargar token:", e);
+      } finally {
+        setInitializing(false);
       }
-      setInitializing(false);
     })();
   }, []);
 
+  // Login: guarda el token y devuelve true o lanza error
   const login = async ({ email, password }) => {
     setLoading(true);
     try {
-      const { token: newToken } = await loginApi({ email, password });
-      setToken(newToken);
+      const { success, data, error } = await loginApi({ email, password });
+      if (!success) throw new Error(error);
+      const newToken = data.token;
+      console.log("🔑 Guardando token:", newToken);
       await SecureStore.setItemAsync("token", newToken);
-
-      const profile = await getProfile();
-      setUser(profile);
+      setToken(newToken);
+      return true;
     } finally {
       setLoading(false);
     }
   };
 
-  const register = async (data) => {
-    console.log("🔄 AuthContext.register iniciando con:", data);
+  // Register: igual que login, si viene token lo guarda
+  const register = async (registerData) => {
     setLoading(true);
     try {
-      const { token: newToken, user: userData } = await registerApi(data);
-      console.log("🆕 Registro exitoso, token:", newToken, "user:", userData);
-      setToken(newToken);
-      await SecureStore.setItemAsync("token", newToken);
-      setUser(userData);
+      const { success, data, error } = await registerApi(registerData);
+      if (!success) throw new Error(error);
+      if (data.token) {
+        console.log("🆕 Registro, guardando token:", data.token);
+        await SecureStore.setItemAsync("token", data.token);
+        setToken(data.token);
+      }
+      return true;
     } finally {
       setLoading(false);
-      console.log("🔄 AuthContext.register terminó");
     }
   };
 
+  // Logout: borra token
   const logout = async () => {
-    console.log("🚪 AuthContext.logout");
-    setUser(null);
+    console.log("🚪 Logout");
     setToken(null);
     await SecureStore.deleteItemAsync("token");
   };
@@ -73,7 +73,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, token, loading, login, register, logout }}
+      value={{ token, loading, login, register, logout }}
     >
       {children}
     </AuthContext.Provider>

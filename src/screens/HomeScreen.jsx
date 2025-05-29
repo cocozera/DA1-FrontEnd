@@ -1,3 +1,5 @@
+// src/screens/HomeScreen.js
+
 import { useNavigation } from '@react-navigation/native';
 import { useContext, useEffect, useState } from 'react';
 import {
@@ -10,6 +12,7 @@ import {
   Text,
   View,
 } from 'react-native';
+import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { AuthContext } from '../context/authContext';
 import { getInProgressRoutes } from '../services/routeService';
@@ -21,6 +24,7 @@ const { width } = Dimensions.get('window');
 export default function HomeScreen() {
   const navigation = useNavigation();
   const { token } = useContext(AuthContext);
+  
   const [userName, setUserName] = useState('');
   const [inProgressRoute, setInProgressRoute] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
@@ -30,36 +34,63 @@ export default function HomeScreen() {
       navigation.replace('Login');
       return;
     }
+    loadData();
+  }, [token]);
+
+  const loadData = () => {
     fetchUser();
     fetchInProgressRoute();
-  }, [token]);
+  };
 
   const fetchUser = async () => {
     try {
-      const data = await getProfile();
+      const { success, data, error } = await getProfile();
+      if (!success) {
+        Toast.show({ type: 'error', text1: error });
+        return;
+      }
+      // Si data.name viene vacío o null, mostramos un mensaje informativo
+      if (!data.name?.trim()) {
+        Toast.show({
+          type: 'info',
+          text1: 'Bienvenido!',
+          text2: 'Tu perfil no tiene nombre configurado.',
+        });
+      }
       setUserName(data.name || '');
     } catch (err) {
-      console.warn('Error fetching user:', err);
+      Toast.show({
+        type: 'error',
+        text1: 'Error inesperado',
+        text2: 'No se pudo cargar los datos del usuario.',
+      });
     }
   };
 
   const fetchInProgressRoute = async () => {
     try {
-      const routes = await getInProgressRoutes();
-      if (routes.length > 0) {
+      const { success, data: routes, error } = await getInProgressRoutes();
+      if (!success) {
+        Toast.show({ type: 'error', text1: error });
+        return;
+      }
+      if (Array.isArray(routes) && routes.length > 0) {
         setInProgressRoute(routes[0]);
       } else {
         setInProgressRoute(null);
       }
     } catch (err) {
-      console.warn('Error al obtener ruta en progreso:', err);
+      Toast.show({
+        type: 'error',
+        text1: 'Error inesperado',
+        text2: 'No se pudo cargar la ruta en progreso.',
+      });
     }
   };
 
   const onRefresh = async () => {
     setRefreshing(true);
-    await fetchUser();
-    await fetchInProgressRoute();
+    await Promise.all([fetchUser(), fetchInProgressRoute()]);
     setRefreshing(false);
   };
 
@@ -118,6 +149,8 @@ export default function HomeScreen() {
           <Icon name="truck-check" size={30} color="#fff" />
         </Pressable>
       )}
+
+      <Toast />
     </SafeAreaView>
   );
 }

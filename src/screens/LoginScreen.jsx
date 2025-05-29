@@ -1,12 +1,13 @@
 import { useContext, useState } from 'react';
 import {
+  ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
-  Pressable,
   SafeAreaView,
   StyleSheet,
   Text,
-  View
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -22,25 +23,21 @@ export default function LoginScreen({ navigation }) {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async () => {
-    if (!email || !password) {
-      return Toast.show({
-        type: 'error',
-        text1: 'Completa todos los campos',
-      });
+    if (!email.trim() || !password) {
+      Toast.show({ type: 'error', text1: 'Completa todos los campos' });
+      return;
     }
-  try {
-    await login({ email, password });
-    navigation.replace('Home');
-  } catch (err) {
-    const errorMessage = err.message.toLowerCase().includes('invalid credentials')
-      ? 'Credenciales inválidas.'
-      : err.message;
-    Toast.show({
-      type: 'error',
-      text1: errorMessage,
-    });
-  }
-};
+    try {
+      await login({ email, password });
+      navigation.replace('Home');
+    } catch (err) {
+      // Diferenciar error de red del resto
+      const msg = err.message.includes('Servidor no disponible')
+        ? 'No se pudo conectar con el servidor. Inténtalo más tarde.'
+        : err.message;
+      Toast.show({ type: 'error', text1: msg });
+    }
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -48,13 +45,11 @@ export default function LoginScreen({ navigation }) {
         style={styles.wrapper}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
-        {/* Encabezado visual */}
         <View style={styles.header}>
           <Icon name="truck-fast" size={40} color={colors.primary} />
           <Text style={styles.headerText}>DeRemate.com</Text>
         </View>
 
-        {/* Card estilo popup */}
         <View style={styles.card}>
           <Text style={styles.title}>Iniciar sesión</Text>
 
@@ -64,6 +59,7 @@ export default function LoginScreen({ navigation }) {
             onChangeText={setEmail}
             keyboardType="email-address"
             autoCapitalize="none"
+            editable={!loading}
           />
 
           <CustomTextInput
@@ -72,36 +68,42 @@ export default function LoginScreen({ navigation }) {
             onChangeText={setPassword}
             secureTextEntry={!showPassword}
             iconRight={showPassword ? 'eye-off' : 'eye'}
-            onPressIconRight={() => setShowPassword((prev) => !prev)}
+            onPressIconRight={() => setShowPassword((v) => !v)}
+            editable={!loading}
           />
 
           <CustomButton
-            title="Ingresar"
+            title={loading ? 'Ingresando...' : 'Ingresar'}
             onPress={handleLogin}
             loading={loading}
+            disabled={loading}
           />
-          <View style={styles.links}>
-            <Pressable onPress={() => navigation.navigate('RecoverPassword')}>
-              {({ pressed }) => (
-                <Text style={[styles.linkText, pressed && styles.pressedText]}>
-                  ¿Olvidaste tu contraseña?
-                </Text>
-              )}
-            </Pressable>
 
-            <Pressable
+          {loading && (
+            <ActivityIndicator
+              style={{ marginTop: 16 }}
+              size="small"
+              color={colors.primary}
+            />
+          )}
+
+          <View style={styles.links}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('RecoverPassword')}
+              disabled={loading}
+            >
+              <Text style={styles.linkText}>¿Olvidaste tu contraseña?</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
               onPress={() => navigation.navigate('Register')}
               style={{ marginTop: 8 }}
+              disabled={loading}
             >
-              {({ pressed }) => (
-                <Text style={[styles.linkText, pressed && styles.pressedText]}>
-                  ¿No tenés cuenta? Registrate ahora
-                </Text>
-              )}
-            </Pressable>
+              <Text style={styles.linkText}>
+                ¿No tenés cuenta? Registrate ahora
+              </Text>
+            </TouchableOpacity>
           </View>
-
-
         </View>
       </KeyboardAvoidingView>
       <Toast />
@@ -141,11 +143,6 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 5,
   },
-  pressedText: {
-  opacity: 0.7,
-  transform: [{ scale: 0.97 }],
-  },
-
   title: {
     ...typography.h1,
     textAlign: 'center',
