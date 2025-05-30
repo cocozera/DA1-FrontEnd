@@ -66,7 +66,7 @@ export default function LoginScreen({ navigation }) {
           />
 
           <CustomTextInput
-            placeholder="Password"
+            placeholder="Contraseña"
             value={password}
             onChangeText={setPassword}
             secureTextEntry={!showPassword}
@@ -78,7 +78,6 @@ export default function LoginScreen({ navigation }) {
           <CustomButton
             title={loading ? 'Ingresando...' : 'Ingresar'}
             onPress={handleLogin}
-            loading={loading}
             disabled={loading}
           />
 
@@ -95,18 +94,26 @@ export default function LoginScreen({ navigation }) {
               onPress={() => navigation.navigate('RecoverPassword')}
               disabled={loading}
             >
-              <CustomText style={styles.linkText}>
-                ¿Olvidaste tu contraseña?
-              </CustomText>
+              {({ pressed }) => (
+                <CustomText
+                  style={[styles.linkText, pressed && styles.pressedText]}
+                >
+                  ¿Olvidaste tu contraseña?
+                </CustomText>
+              )}
             </Pressable>
             <Pressable
               onPress={() => navigation.navigate('Register')}
               style={{ marginTop: 8 }}
               disabled={loading}
             >
-              <CustomText style={styles.linkText}>
-                ¿No tenés cuenta? Registrate ahora
-              </CustomText>
+              {({ pressed }) => (
+                <CustomText
+                  style={[styles.linkText, pressed && styles.pressedText]}
+                >
+                  ¿No tenés cuenta? Registrate ahora
+                </CustomText>
+              )}
             </Pressable>
           </View>
         </View>
@@ -156,6 +163,10 @@ const styles = StyleSheet.create({
   links: {
     marginTop: 24,
     alignItems: 'center',
+  },
+    pressedText: {
+    opacity: 0.7,
+    transform: [{ scale: 0.97 }],
   },
   linkText: {
     ...typography.link,           // Montserrat-Regular tamaño 16

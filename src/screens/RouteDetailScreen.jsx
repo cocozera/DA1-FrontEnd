@@ -94,11 +94,11 @@ export default function RouteDetailScreen() {
         <CustomText style={styles.value}>{detail.zone}</CustomText>
 
         <CustomText style={styles.label}>Estado:</CustomText>
-        <CustomText
-          style={[styles.value, { color: getStatusColor(detail.status) }]}
-        >
-          {detail.status}
-        </CustomText>
+          <CustomText
+            style={[styles.value, { color: '#000000', fontWeight: 'bold' }]}
+          >
+            {detail.status}
+          </CustomText>
 
         {detail.packageDTO && (
           <>
@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
   value: {
     ...typography.body,         // Montserrat-Regular, size 16
     marginBottom: 8,
-    color: colors.textPrimary,
+    color: '#000000',
   },
   floatingButton: {
     position: 'absolute',

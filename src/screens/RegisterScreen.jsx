@@ -103,7 +103,7 @@ export default function RegisterScreen({ navigation }) {
           />
 
           <CustomButton
-            title={loading ? 'Registrando...' : 'REGISTRARSE'}
+            title={loading ? 'Registrando...' : 'Registrarse'}
             onPress={handleRegister}
             disabled={loading}
             loading={loading}

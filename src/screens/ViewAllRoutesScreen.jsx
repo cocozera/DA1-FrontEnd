@@ -90,7 +90,7 @@ export default function ViewAllRoutesScreen() {
       </CustomText>
 
       <CustomText style={styles.infoText}>
-        Estado:{' '}
+        <CustomText style={styles.bold}>Estado: </CustomText>
         <CustomText style={[styles.badge, getStatusStyle(item.status)]}>
           {item.status}
         </CustomText>

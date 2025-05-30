@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
   },
   value: {
     ...typography.body,           // Montserrat-Regular, 16
-    color: colors.textPrimary,
+    color: '#000000',
     marginLeft: 28,
     marginTop: 2,
   },

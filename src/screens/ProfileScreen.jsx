@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
   },
   valueText: {
     ...typography.body,         // Montserrat-Regular, tamaño 16
-    color: colors.textPrimary,
+    color: '#000000',
     marginBottom: 15,
   },
 });
