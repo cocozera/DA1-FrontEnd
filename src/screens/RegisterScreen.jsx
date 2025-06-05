@@ -35,6 +35,11 @@ export default function RegisterScreen({ navigation }) {
     if (!email.trim()) {
       return Alert.alert('Error', 'Por favor ingresa tu email');
     }
+    // Validar formato de correo electrónico
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return Alert.alert('Error', 'Por favor ingresa un email válido');
+    }
     if (!password) {
       return Alert.alert('Error', 'Por favor ingresa tu contraseña');
     }
