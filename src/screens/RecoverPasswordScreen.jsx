@@ -14,7 +14,7 @@ import {
 import Toast from 'react-native-toast-message';
 
 import CustomButton from '../components/CustomButton';
-import CustomText from '../components/CustomText'; // ← import CustomText
+import CustomText from '../components/CustomText';
 import CustomTextInput from '../components/CustomTextInput';
 import { recoverPassword } from '../services/authService';
 import { colors, typography } from '../styles/globalStyles';
@@ -24,8 +24,24 @@ export default function RecoverPasswordScreen() {
   const navigation = useNavigation();
 
   const handleSendCode = async () => {
+    const trimmedEmail = email.trim();
+
+    // 1. Validar campo vacío
+    if (trimmedEmail.length === 0) {
+      Alert.alert('Error', 'Por favor ingresa tu correo electrónico');
+      return;
+    }
+
+    // 2. Validar formato de correo
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(trimmedEmail)) {
+      Alert.alert('Error', 'Por favor ingresa un correo electrónico válido');
+      return;
+    }
+
+    // 3. Si pasa validaciones, llamo al servicio
     try {
-      const response = await recoverPassword({ email });
+      const response = await recoverPassword({ email: trimmedEmail });
       if (response.success) {
         Toast.show({
           type: 'success',
@@ -33,7 +49,7 @@ export default function RecoverPasswordScreen() {
           text2: 'Revisá tu correo electrónico',
           position: 'top',
         });
-        navigation.navigate('ChangePassword', { email });
+        navigation.navigate('ChangePassword', { email: trimmedEmail });
       } else {
         Alert.alert('Error', 'Correo no registrado');
       }
@@ -67,6 +83,8 @@ export default function RecoverPasswordScreen() {
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
+            autoCapitalize="none"
+            autoCorrect={false}
           />
 
           <CustomButton title="Enviar código" onPress={handleSendCode} />

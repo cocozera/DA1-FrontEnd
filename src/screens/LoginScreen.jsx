@@ -13,7 +13,7 @@ import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import CustomButton from '../components/CustomButton';
-import CustomText from '../components/CustomText'; // ← import CustomText
+import CustomText from '../components/CustomText';
 import CustomTextInput from '../components/CustomTextInput';
 import { AuthContext } from '../context/authContext';
 import { colors, typography } from '../styles/globalStyles';
@@ -25,17 +25,42 @@ export default function LoginScreen({ navigation }) {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async () => {
-    if (!email.trim() || !password) {
+    const trimmedEmail = email.trim();
+
+    // 1. Verificar campos vacíos
+    if (!trimmedEmail || !password) {
       Toast.show({ type: 'error', text1: 'Completa todos los campos' });
       return;
     }
+
+    // 2. Validar formato de correo
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(trimmedEmail)) {
+      Toast.show({ type: 'error', text1: 'Por favor ingresa un correo válido' });
+      return;
+    }
+
     try {
-      await login({ email, password });
+      // 3. Intentar login
+      await login({ email: trimmedEmail, password });
       navigation.replace('Home');
     } catch (err) {
-      const msg = err.message.includes('Servidor no disponible')
-        ? 'No se pudo conectar con el servidor. Inténtalo más tarde.'
-        : err.message;
+      // 4. Detectar distintos mensajes de error del backend
+      let msg = '';
+
+      // Si el backend responde "User not found" o "Invalid credentials", mostramos el mismo texto en español
+      if (
+        err.message.includes('User not found') ||
+        err.message.includes('Invalid credentials')
+      ) {
+        msg = 'Usuario o contraseña incorrectos';
+      } else if (err.message.includes('Servidor no disponible')) {
+        msg = 'No se pudo conectar con el servidor. Inténtalo más tarde.';
+      } else {
+        // Cualquier otro error, lo mostramos tal cual o traducimos según convenga
+        msg = err.message;
+      }
+
       Toast.show({ type: 'error', text1: msg });
     }
   };
@@ -71,7 +96,7 @@ export default function LoginScreen({ navigation }) {
             onChangeText={setPassword}
             secureTextEntry={!showPassword}
             iconRight={showPassword ? 'eye-off' : 'eye'}
-            onPressIconRight={() => setShowPassword(v => !v)}
+            onPressIconRight={() => setShowPassword((v) => !v)}
             editable={!loading}
           />
 
@@ -141,7 +166,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   headerText: {
-    ...typography.h2,             // Montserrat-Bold tamaño 20
+    ...typography.h2, // Montserrat-Bold tamaño 20
     color: colors.textPrimary,
   },
   card: {
@@ -155,7 +180,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   title: {
-    ...typography.h1,             // Montserrat-Bold tamaño 28
+    ...typography.h1, // Montserrat-Bold tamaño 28
     textAlign: 'center',
     marginBottom: 24,
     color: colors.textPrimary,
@@ -164,12 +189,12 @@ const styles = StyleSheet.create({
     marginTop: 24,
     alignItems: 'center',
   },
-    pressedText: {
+  pressedText: {
     opacity: 0.7,
     transform: [{ scale: 0.97 }],
   },
   linkText: {
-    ...typography.link,           // Montserrat-Regular tamaño 16
+    ...typography.link, // Montserrat-Regular tamaño 16
     color: colors.primary,
   },
 });
