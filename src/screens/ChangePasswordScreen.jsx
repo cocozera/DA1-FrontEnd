@@ -5,11 +5,12 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
   StyleSheet,
   View,
 } from 'react-native';
 import CustomButton from '../components/CustomButton';
-import CustomText from '../components/CustomText'; // ← importamos CustomText
+import CustomText from '../components/CustomText';
 import CustomTextInput from '../components/CustomTextInput';
 import { changePassword } from '../services/authService';
 import { colors, typography } from '../styles/globalStyles';
@@ -49,38 +50,42 @@ export default function ChangePasswordScreen() {
   return (
     <KeyboardAvoidingView
       style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <View style={styles.form}>
-        {/* Título usando CustomText + typography.h1 */}
-        <CustomText style={styles.title}>Cambiar Contraseña</CustomText>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        keyboardShouldPersistTaps="handled"
+      >
+        <View style={styles.form}>
+          <CustomText style={styles.title}>Cambiar Contraseña</CustomText>
 
-        <CustomTextInput
-          placeholder="Código de verificación"
-          value={code}
-          onChangeText={setCode}
-        />
+          <CustomTextInput
+            placeholder="Código de verificación"
+            value={code}
+            onChangeText={setCode}
+          />
 
-        <CustomTextInput
-          placeholder="Nueva contraseña"
-          secureTextEntry
-          value={newPassword}
-          onChangeText={setNewPassword}
-        />
+          <CustomTextInput
+            placeholder="Nueva contraseña"
+            secureTextEntry
+            value={newPassword}
+            onChangeText={setNewPassword}
+          />
 
-        <CustomTextInput
-          placeholder="Confirmar nueva contraseña"
-          secureTextEntry
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
-        />
+          <CustomTextInput
+            placeholder="Confirmar nueva contraseña"
+            secureTextEntry
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+          />
 
-        <CustomButton
-          title="Cambiar contraseña"
-          onPress={handleChangePassword}
-          loading={loading}
-        />
-      </View>
+          <CustomButton
+            title="Cambiar contraseña"
+            onPress={handleChangePassword}
+            loading={loading}
+          />
+        </View>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 }
@@ -90,6 +95,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.backgroundBeige,
     padding: 20,
+  },
+  scrollContent: {
+    flexGrow: 1,
     justifyContent: 'center',
   },
   form: {
@@ -103,7 +111,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   title: {
-    ...typography.h1,     // Montserrat-Bold, size 28
+    ...typography.h1,
     textAlign: 'center',
     marginBottom: 24,
   },
