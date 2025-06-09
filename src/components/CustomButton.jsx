@@ -1,10 +1,13 @@
-import { ActivityIndicator, Text, TouchableOpacity } from 'react-native';
+import { ActivityIndicator, Pressable, Text } from 'react-native';
 import { baseStyles, colors } from '../styles/globalStyles';
 
 const CustomButton = ({ title, onPress, loading = false }) => {
   return (
-    <TouchableOpacity
-      style={baseStyles.button}
+    <Pressable
+      style={({ pressed }) => [
+        baseStyles.button,
+        pressed && { opacity: 0.7 }
+      ]}
       onPress={onPress}
       disabled={loading}
     >
@@ -12,7 +15,7 @@ const CustomButton = ({ title, onPress, loading = false }) => {
         ? <ActivityIndicator color={colors.white} />
         : <Text style={baseStyles.buttonText}>{title}</Text>
       }
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 

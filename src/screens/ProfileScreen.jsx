@@ -5,7 +5,6 @@ import {
   Pressable,
   SafeAreaView,
   StyleSheet,
-  TouchableOpacity,
   View
 } from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -90,9 +89,9 @@ export default function ProfileScreen({ navigation }) {
           {profile.phoneNumber || 'Sin teléfono'}
         </CustomText>
 
-        <TouchableOpacity style={baseStyles.button} onPress={handleLogout}>
+        <Pressable style={baseStyles.button} onPress={handleLogout}>
           <CustomText style={baseStyles.buttonText}>Cerrar sesión</CustomText>
-        </TouchableOpacity>
+        </Pressable>
       </View>
 
       <Toast />
