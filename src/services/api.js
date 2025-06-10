@@ -25,9 +25,10 @@ const API_BASE_URL =
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: { 'Content-Type': 'application/json' },
+  timeout: 10000,
 });
 
-// Request interceptor (igual al tuyo)
+// Request interceptor 
 api.interceptors.request.use(
   async config => {
     console.log('➡️ Petición a', config.url);
@@ -43,7 +44,7 @@ api.interceptors.request.use(
   }
 );
 
-// Response interceptor mejorado
+// Response interceptor
 api.interceptors.response.use(
   response => response,
   async error => {
