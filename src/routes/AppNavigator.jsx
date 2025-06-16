@@ -5,6 +5,7 @@ import HomeScreen from '../screens/HomeScreen';
 import InProgressRoute from '../screens/InProgressRoute'; // 
 import LoginScreen from '../screens/LoginScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import QRScannerScreen from '../screens/QRScannerScreen';
 import RecoverPasswordScreen from '../screens/RecoverPasswordScreen';
 import RegisterScreen from '../screens/RegisterScreen';
 import RouteDetailScreen from '../screens/RouteDetailScreen';
@@ -27,6 +28,7 @@ export default function AppNavigator() {
       <Stack.Screen name="RouteDetail" component={RouteDetailScreen} />
       <Stack.Screen name="CompletedRoutes" component={CompletedRoutesScreen} />
       <Stack.Screen name="InProgressRouteDetail" component={InProgressRoute} /> 
+      <Stack.Screen name="QRScanner" component={QRScannerScreen} />
     </Stack.Navigator>
   );
 }

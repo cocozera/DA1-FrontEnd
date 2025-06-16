@@ -1,21 +1,18 @@
 // src/styles/globalStyles.js
 import { StyleSheet } from 'react-native';
 
-// Nombres de fuente tal como los cargaste en App.js
 const REGULAR = 'Montserrat-Regular';
 const BOLD    = 'Montserrat-Bold';
 
-// Paleta de colores
 export const colors = {
-  primary:        '#B20000',   // rojo fuerte para botones
-  textPrimary:    '#8A0000',   // rojo oscuro para títulos y texto
-  backgroundBeige:'#F1E0D6',   // beige de fondo de pantalla
+  primary:        '#B20000',
+  textPrimary:    '#8A0000',
+  backgroundBeige:'#F1E0D6',
   white:          '#FFFFFF',
   gray300:        '#DEE2E6',
   gray500:        '#ADB5BD',
 };
 
-// Tipografía global
 export const typography = StyleSheet.create({
   h1: {
     fontFamily: BOLD,
@@ -40,8 +37,17 @@ export const typography = StyleSheet.create({
   },
 });
 
-// Estilos base reutilizables
 export const baseStyles = StyleSheet.create({
+  containerScreen: {
+    flex: 1,
+    backgroundColor: colors.backgroundBeige,
+    padding: 16,
+  },
+  loaderCenter: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: colors.backgroundBeige,
+  },
   button: {
     backgroundColor: colors.primary,
     paddingVertical: 15,
@@ -78,5 +84,61 @@ export const baseStyles = StyleSheet.create({
   backButtonPressed: {
     transform:       [{ scale: 0.9 }],
     backgroundColor: colors.gray300,
+  },
+  overlayCenter: {
+    position: 'absolute',
+    top: 0, left: 0, right: 0, bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.8)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 20,
+  },
+  modalBox: {
+    backgroundColor: colors.white,
+    padding: 20,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 30,
+    right: 30,
+  },
+  sectionHeader: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  sectionUnderline: {
+    marginTop: 6,
+    width: 100,
+    height: 3,
+    backgroundColor: colors.primary,
+    borderRadius: 2,
+  },
+  card: {
+    backgroundColor: colors.white,
+    borderRadius: 12,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 5,
+  },
+  floatingButton: {
+    position: 'absolute',
+    bottom: 30,
+    right: 30,
+    backgroundColor: colors.primary,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 10,
+    zIndex: 10,
+  },
+  floatingButtonPressed: {
+    opacity: 0.7,
   },
 });

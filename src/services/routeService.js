@@ -1,5 +1,7 @@
 // src/services/routeService.js
+import { Buffer } from 'buffer';
 import api from './api';
+global.Buffer = global.Buffer || Buffer;
 
 const parseError = (error, defaultMsg) => {
   if (!error.response) {
@@ -77,3 +79,18 @@ export const completeRoute = async (routeId) => {
     return { success: false, error: msg };
   }
 };
+
+export const getRouteQrCode = async (routeId) => {
+  try {
+    const { data } = await api.get(`/routes/${routeId}/qrcode`, {
+      responseType: 'arraybuffer', // importante para manejar imágenes binarias
+    });
+    const qrCodeBase64 = `data:image/png;base64,${Buffer.from(data, 'binary').toString('base64')}`;
+    return { success: true, data: qrCodeBase64 };
+  } catch (error) {
+    const msg = parseError(error, `Error al obtener el QR de la ruta ${routeId}`);
+    console.error(`❌ getRouteQrCode (${routeId}) falla:`, msg);
+    return { success: false, error: msg };
+  }
+};
+
