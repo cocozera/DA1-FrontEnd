@@ -142,3 +142,44 @@ export const baseStyles = StyleSheet.create({
     opacity: 0.7,
   },
 });
+
+export const scannerStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.backgroundBeige,
+  },
+  loader: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonContainer: {
+    position: 'absolute',
+    bottom: 40,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+  },
+  button: {
+    width: 120,
+  },
+  qrGuide: {
+  position: 'absolute',
+  top: '30%',
+  left: '15%',
+  width: '70%',
+  height: '40%',
+  justifyContent: 'center',
+  alignItems: 'center',
+  zIndex: 1,
+},
+guideBorder: {
+  width: '100%',
+  height: '100%',
+  borderWidth: 3,
+  borderColor: '#00e676', // verde moderno
+  borderRadius: 12,
+  backgroundColor: 'transparent',
+  borderStyle: 'solid',
+}
+});
