@@ -1,60 +1,66 @@
 import * as SecureStore from "expo-secure-store";
 import { createContext, useEffect, useState } from "react";
+import api from "../services/api";
 import { loginApi, registerApi } from "../services/authService";
 
 export const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(null);
+  const [user, setUser] = useState(null); // 👤 nuevo
   const [loading, setLoading] = useState(false);
   const [initializing, setInitializing] = useState(true);
 
-  // Carga inicial del token
+  // 🔄 Carga inicial del token y el usuario
   useEffect(() => {
     (async () => {
-      console.log("⏳ Cargando token desde SecureStore");
       try {
         const savedToken = await SecureStore.getItemAsync("token");
         if (savedToken) {
-          console.log("✅ Token encontrado:", savedToken);
           setToken(savedToken);
-        } else {
-          console.log("🚫 No hay token guardado");
+          await fetchUser(); // cargar usuario
         }
       } catch (e) {
-        console.error("❌ Error al cargar token:", e);
+        console.error("❌ Error inicial:", e);
       } finally {
         setInitializing(false);
       }
     })();
   }, []);
 
-  // Login: guarda el token y devuelve true o lanza error
+  // 🧠 Cargar el usuario desde /me
+  const fetchUser = async () => {
+    try {
+      const res = await api.get("/users/me");
+      setUser(res.data); // { id, name, email... }
+    } catch (err) {
+      console.error("❌ Error al obtener usuario:", err);
+    }
+  };
+
   const login = async ({ email, password }) => {
     setLoading(true);
     try {
       const { success, data, error } = await loginApi({ email, password });
       if (!success) throw new Error(error);
-      const newToken = data.token;
-      console.log("🔑 Guardando token:", newToken);
-      await SecureStore.setItemAsync("token", newToken);
-      setToken(newToken);
+      await SecureStore.setItemAsync("token", data.token);
+      setToken(data.token);
+      await fetchUser(); // cargar usuario al loguear
       return true;
     } finally {
       setLoading(false);
     }
   };
 
-  // Register: igual que login, si viene token lo guarda
   const register = async (registerData) => {
     setLoading(true);
     try {
       const { success, data, error } = await registerApi(registerData);
       if (!success) throw new Error(error);
       if (data.token) {
-        console.log("🆕 Registro, guardando token:", data.token);
         await SecureStore.setItemAsync("token", data.token);
         setToken(data.token);
+        await fetchUser(); // cargar usuario al registrar
       }
       return true;
     } finally {
@@ -62,10 +68,9 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Logout: borra token
   const logout = async () => {
-    console.log("🚪 Logout");
     setToken(null);
+    setUser(null);
     await SecureStore.deleteItemAsync("token");
   };
 
@@ -73,7 +78,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ token, loading, login, register, logout }}
+      value={{ token, user, loading, login, register, logout }}
     >
       {children}
     </AuthContext.Provider>
