@@ -5,18 +5,38 @@ const parseError = (error, defaultMsg) => {
   if (!error.response) {
     return "Servidor no disponible. Por favor, inténtalo más tarde.";
   }
-  return error.response.data?.message || defaultMsg;
+  
+  const status = error.response.status;
+  const message = error.response.data?.message || defaultMsg;
+  
+  // Log detallado del error para debugging (sin datos sensibles)
+  console.error(`❌ Error ${status}:`, {
+    url: error.config?.url,
+    method: error.config?.method,
+    status,
+    message,
+    timestamp: new Date().toISOString()
+  });
+  
+  return message;
 };
 
 export const loginApi = async ({ email, password }) => {
-  console.log("🔑 loginApi llamado con:", { email, password: "***" });
+  
   try {
     const { data } = await api.post("/auth/login", { email, password });
-    console.log("✅ loginApi respuesta:", data);
+    
     return { success: true, data };
+    
   } catch (error) {
     const msg = parseError(error, "Error al iniciar sesión");
-    console.error("❌ loginApi falla:", msg);
+    console.error("❌ Login fallido:", {
+      email,
+      error: msg,
+      status: error.response?.status,
+      timestamp: new Date().toISOString()
+    });
+    
     return { success: false, error: msg };
   }
 };

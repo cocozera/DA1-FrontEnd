@@ -24,7 +24,6 @@ function AppContent() {
   const { user, token } = useContext(AuthContext);
 
   useEffect(() => {
-    console.log('[App] 🔄 useEffect ejecutado - user:', user, 'token:', token);
 
     async function setupNotifications() {
       if (!user?.id || !token) {
