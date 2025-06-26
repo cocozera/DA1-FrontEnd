@@ -17,7 +17,6 @@ export async function requestNotificationPermissions() {
   const { status: existingStatus } = await Notifications.getPermissionsAsync();
 
   if (existingStatus === 'granted') {
-    console.log('✅ Permiso ya otorgado');
     return true;
   }
 
@@ -37,19 +36,16 @@ export function startPeriodicNotifications(intervalMinutes = 1) {
   if (notificationInterval) clearInterval(notificationInterval);
 
   const intervalMs = intervalMinutes * 60 * 1000;
-  console.log(`[Notification] Polling cada ${intervalMinutes} min`);
 
   notificationInterval = setInterval(async () => {
     try {
       const res = await api.get('/notifications'); 
       const notifications = res.data;
 
-      console.log(notifications);
 
       if (notifications.length > 0) {
         for (const n of notifications) {
           await sendNotification(n.title, n.message);
-          console.log(`[Notification] Noti enviada: ${n.title}`);
         }
       }
     } catch (err) {
@@ -62,7 +58,6 @@ export function stopPeriodicNotifications() {
   if (notificationInterval) {
     clearInterval(notificationInterval);
     notificationInterval = null;
-    console.log('[Notification] Polling detenido');
   }
 }
 

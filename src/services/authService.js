@@ -42,12 +42,6 @@ export const loginApi = async ({ email, password }) => {
 };
 
 export const registerApi = async ({ name, email, password, phoneNumber }) => {
-  console.log("📝 registerApi llamado con:", {
-    name,
-    email,
-    phoneNumber,
-    password: "***",
-  });
   try {
     const { data } = await api.post("/auth/register", {
       name,
@@ -55,7 +49,6 @@ export const registerApi = async ({ name, email, password, phoneNumber }) => {
       password,
       phoneNumber,
     });
-    console.log("✅ registerApi respuesta:", data);
     return { success: true, data };
   } catch (error) {
     const msg = parseError(error, "Error al registrarse");
@@ -65,10 +58,8 @@ export const registerApi = async ({ name, email, password, phoneNumber }) => {
 };
 
 export const recoverPassword = async ({ email }) => {
-  console.log("📧 recoverPassword llamado con:", email);
   try {
     const { data } = await api.post("/auth/recover-password", { email });
-    console.log("✅ recoverPassword respuesta:", data);
     return { success: true, data };
   } catch (error) {
     const msg = parseError(error, "Error al enviar el código de recuperación");
@@ -78,13 +69,11 @@ export const recoverPassword = async ({ email }) => {
 };
 
 export const verifyToken = async ({ email, token }) => {
-  console.log("🔍 verifyToken llamado con:", { email, token: "***" });
   try {
     const { data } = await api.post("/auth/verify", {
       email,
       code: token,
     });
-    console.log("✅ verifyToken respuesta:", data);
     return { success: true, data };
   } catch (error) {
     const msg = parseError(error, "Token inválido o expirado");
@@ -94,14 +83,12 @@ export const verifyToken = async ({ email, token }) => {
 };
 
 export const changePassword = async ({ email, code, newPassword }) => {
-  console.log("🔄 changePassword llamado con:", { email, code: "***" });
   try {
     const { data } = await api.post("/auth/change-password", {
       email,
       code,
       newPassword,
     });
-    console.log("✅ changePassword respuesta:", data);
     return { success: true, data };
   } catch (error) {
     const msg = parseError(error, "Error al cambiar la contraseña");

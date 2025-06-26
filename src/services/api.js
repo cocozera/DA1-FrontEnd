@@ -31,7 +31,6 @@ const api = axios.create({
 // Request interceptor 
 api.interceptors.request.use(
   async config => {
-    console.log('➡️ Petición a', config.url);
     if (config.url && !config.url.startsWith('/auth')) {
       const token = await SecureStore.getItemAsync('token');
       if (token) config.headers.Authorization = `Bearer ${token}`;

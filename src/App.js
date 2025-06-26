@@ -26,34 +26,23 @@ function AppContent() {
   useEffect(() => {
 
     async function setupNotifications() {
-      if (!user?.id || !token) {
-        console.log('[App] ⛔ No hay user o token, no configuro notificaciones');
-        return;
-      }
-
-      console.log('[App] ✅ Configurando notificaciones...');
+      
       await configureNotifications();
 
-      console.log('[App] 📲 Pidiendo permiso para notificaciones...');
       const granted = await requestNotificationPermissions();
-      console.log('[App] 🧾 Permiso notificación otorgado:', granted);
 
       if (!granted) {
-        console.log('🚫 Usuario no aceptó notificaciones');
         return;
       }
 
-      console.log('[App] 📡 Registrando push token en el backend...');
       await registerPushToken(user.id);
 
-      console.log('[App] 🔁 Iniciando polling de notificaciones cada 1 min...');
       startPeriodicNotifications(1);
     }
 
     setupNotifications();
 
     return () => {
-      console.log('[App] ❌ Limpiando polling de notificaciones');
       stopPeriodicNotifications();
     };
   }, [user?.id, token]);
@@ -75,11 +64,9 @@ export default function App() {
   });
 
   if (!fontsLoaded) {
-    console.log('[App] ⏳ Cargando fuentes...');
     return null;
   }
 
-  console.log('[App] ✅ Fuentes cargadas, renderizando App...');
 
   return (
     <AuthProvider>
