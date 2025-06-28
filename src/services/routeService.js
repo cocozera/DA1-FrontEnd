@@ -67,10 +67,10 @@ export const assignRoute = async (routeId) => {
   }
 };
 
-export const completeRoute = async (routeId) => {
+export const completeRoute = async (routeId, code) => {
   try {
     const { data } = await api.post('/routes/complete', null, {
-      params: { routeId },
+      params: { routeId, code },
     });
     return { success: true, data };
   } catch (error) {
