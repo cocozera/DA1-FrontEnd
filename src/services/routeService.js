@@ -1,4 +1,3 @@
-// src/services/routeService.js
 import { Buffer } from 'buffer';
 import api from './api';
 global.Buffer = global.Buffer || Buffer;
@@ -83,7 +82,7 @@ export const completeRoute = async (routeId, code) => {
 export const getRouteQrCode = async (routeId) => {
   try {
     const { data } = await api.get(`/routes/${routeId}/qrcode`, {
-      responseType: 'arraybuffer', // importante para manejar imágenes binarias
+      responseType: 'arraybuffer',
     });
     const qrCodeBase64 = `data:image/png;base64,${Buffer.from(data, 'binary').toString('base64')}`;
     return { success: true, data: qrCodeBase64 };
@@ -93,4 +92,3 @@ export const getRouteQrCode = async (routeId) => {
     return { success: false, error: msg };
   }
 };
-

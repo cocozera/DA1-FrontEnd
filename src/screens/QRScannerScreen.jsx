@@ -13,16 +13,17 @@ export default function QRScannerScreen() {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
 
-  const [scanned, setScanned] = useState(false);
   const [loading, setLoading] = useState(false);
   const [permission, requestPermission] = useCameraPermissions();
   const didRedirect = useRef(false);
+  const scannedRef = useRef(false); // ✅ Evita múltiples lecturas simultáneas
 
   useEffect(() => {
     requestPermission();
 
     return () => {
       didRedirect.current = false;
+      scannedRef.current = false;
     };
   }, []);
 
@@ -31,13 +32,14 @@ export default function QRScannerScreen() {
       didRedirect.current = true;
       setTimeout(() => {
         navigation.reset({ index: 0, routes: [{ name: 'Home' }] });
-      }, 300); // asegura ejecución después del cierre del Alert
+      }, 300);
     }
   };
 
   const handleBarCodeScanned = async ({ data }) => {
-    if (scanned || loading) return;
-    setScanned(true);
+    if (scannedRef.current || loading) return;
+
+    scannedRef.current = true;
     setLoading(true);
 
     try {
@@ -81,10 +83,9 @@ export default function QRScannerScreen() {
       <CameraView
         style={StyleSheet.absoluteFill}
         barcodeTypes={['qr']}
-        onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
+        onBarcodeScanned={handleBarCodeScanned}
       />
 
-      {/* Guía visual para escanear el QR */}
       <View style={scannerStyles.qrGuide}>
         <View style={scannerStyles.guideBorder} />
       </View>
