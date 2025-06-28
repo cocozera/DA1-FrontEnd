@@ -2,6 +2,8 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { useState } from 'react';
 import {
   Alert,
+  Linking,
+  Platform,
   Pressable,
   SafeAreaView,
   ScrollView,
@@ -51,6 +53,25 @@ export default function InProgressRoute() {
     }
   };
 
+  const openGoogleMaps = (address) => {
+    const encodedAddress = encodeURIComponent(address);
+    const url = Platform.select({
+      ios: `maps:0,0?q=${encodedAddress}`,
+      android: `geo:0,0?q=${encodedAddress}`
+    });
+
+    Linking.canOpenURL(url)
+      .then((supported) => {
+        if (supported) {
+          return Linking.openURL(url);
+        } else {
+          const browserUrl = `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
+          return Linking.openURL(browserUrl);
+        }
+      })
+      .catch((err) => console.error('Error al abrir Google Maps:', err));
+  };
+
   if (!routeData) {
     return (
       <SafeAreaView style={styles.container}>
@@ -85,6 +106,13 @@ export default function InProgressRoute() {
         <Card icon="calendar-clock" label="Inicio" value={formatDate(routeData.startedAt)} />
 
         <View style={styles.buttonContainer}>
+          <CustomButton 
+            title="Ver en Google Maps" 
+            icon="map-marker" 
+            onPress={() => openGoogleMaps(routeData.address)}
+            style={styles.mapsButton}
+          />
+
           <CustomButton 
             title="Finalizar Ruta" 
             onPress={() => setModalVisible(true)}
@@ -174,5 +202,9 @@ const styles = StyleSheet.create({
   },
   finishButton: {
     width: '100%',
+  },
+  mapsButton: {
+    backgroundColor: '#4CAF50',
+    marginBottom: 12,
   },
 });
